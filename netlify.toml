@@ -1,0 +1,13 @@
+# Netlify 배포 설정 — 앱 파일이 있는 mint-level-test 폴더를 그대로 공개합니다. (빌드 과정 없음)
+[build]
+  publish = "mint-level-test"
+  command = ""
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    # questions.js가 바뀌면 바로 반영되도록 캐시하지 않음
+    Cache-Control = "no-cache"
