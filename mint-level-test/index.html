@@ -182,6 +182,66 @@ table.edit td.emoji input { width: 64px; min-width: 64px; text-align: center; fo
 .student-card .big-emoji { font-size: 4.5rem; line-height: 1; }
 .student-card h2 { margin: 0; font-size: 2rem; color: var(--mint-900); }
 .pause-bar { display: flex; justify-content: flex-end; margin-top: 18px; }
+.student-card .instruction { margin: 0; font-size: 1.25rem; color: var(--muted); font-weight: 700; }
+.student-card .prompt { margin: 0; font-size: 1.7rem; font-weight: 800; color: var(--ink); line-height: 1.4; }
+.student-card .picture { font-size: 5rem; line-height: 1.1; }
+.student-card .read-word {
+  font-size: clamp(4rem, 14vw, 7.5rem); font-weight: 800; color: var(--mint-900);
+  letter-spacing: 0.02em; line-height: 1.1; padding: 10px 30px;
+  background: var(--cream); border-radius: 28px; border: 3px dashed var(--mint-300);
+}
+.choices { display: grid; gap: 14px; width: 100%; max-width: 620px; grid-template-columns: 1fr; }
+.choices.short { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.choice {
+  min-height: 72px; padding: 12px 18px; border-radius: 22px;
+  border: 3px solid var(--mint-300); background: #fff; color: var(--ink);
+  font: inherit; font-size: 1.45rem; font-weight: 800; cursor: pointer;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+.choice:hover:not(:disabled) { background: var(--mint-100); border-color: var(--mint-600); }
+.choice:active:not(:disabled) { transform: scale(0.97); }
+.choice:disabled { cursor: default; }
+.choice.picked { background: var(--leaf); border-color: var(--mint-600); }
+.btn-say { min-height: 56px; font-size: 1.2rem; border-radius: 999px; }
+.teacher-bar {
+  width: 100%; max-width: 560px; margin-top: 6px; padding: 14px;
+  border-radius: 24px; background: var(--mint-100); border: 2px dashed var(--mint-300);
+}
+.teacher-bar .tlabel { font-size: 0.95rem; font-weight: 800; color: var(--mint-900); margin-bottom: 8px; }
+.teacher-bar .tbtns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.teacher-bar button { min-height: 72px; font-size: 2rem; border-radius: 20px; border: 0; cursor: pointer; background: #fff; box-shadow: var(--shadow); }
+.teacher-bar button:active { transform: scale(0.96); }
+.retry-note { min-height: 1.6em; color: var(--mint-600); font-weight: 800; margin: 0; }
+.passage-layout { display: grid; gap: 18px; width: 100%; text-align: left; }
+@media (min-width: 900px) { .passage-layout { grid-template-columns: 1.15fr 1fr; align-items: start; } }
+.passage-box {
+  background: var(--cream); border: 2px solid var(--line); border-radius: 22px;
+  padding: 20px 22px; font-size: 1.15rem; line-height: 1.75; max-height: 60vh; overflow-y: auto;
+}
+.passage-box h3 { margin: 0 0 8px; color: var(--mint-900); font-size: 1.3rem; }
+.passage-box p { margin: 0; }
+.passage-q { display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
+.passage-q .prompt { font-size: 1.35rem; }
+.passage-q .choice { font-size: 1.15rem; min-height: 64px; text-align: left; }
+.cheer {
+  position: fixed; inset: 0; display: grid; place-items: center; z-index: 40;
+  background: rgba(251, 253, 246, 0.75); pointer-events: none;
+}
+.cheer div {
+  font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 800; color: var(--mint-900);
+  background: #fff; padding: 24px 44px; border-radius: 999px; box-shadow: var(--shadow);
+  animation: pop 0.35s ease;
+}
+@keyframes pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ---------- 이어하기 카드 / 결과 표 ---------- */
+.resume-card { border: 2px solid var(--leaf); background: #f6fbe9; margin-bottom: 18px; }
+table.plain { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+table.plain th, table.plain td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+table.plain th { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+.big-number { font-size: 1.5rem; font-weight: 800; color: var(--mint-900); }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--mint-100); color: var(--mint-900); font-weight: 700; font-size: 0.85rem; }
+.pill.no { background: var(--danger-bg); color: var(--danger); }
 
 /* ---------- 토스트 ---------- */
 .toast {
@@ -231,6 +291,15 @@ table.edit td.emoji input { width: 64px; min-width: 64px; text-align: center; fo
   <section data-screen="start" hidden>
     <h1 class="screen-title">🌱 새 꽃 맞이하기</h1>
     <p class="screen-lead">상담 정보를 입력하고 테스트를 시작하세요. 이름·메모는 이 기기에만 저장되며 AI로 전송되지 않습니다.</p>
+    <div class="card resume-card" id="resumeCard" hidden>
+      <h2>⏸ 진행 중인 테스트가 있어요</h2>
+      <p class="hint" id="resumeInfo"></p>
+      <div class="btn-row">
+        <button class="btn btn-primary" type="button" id="btnResume">▶ 이어하기</button>
+        <button class="btn btn-soft" type="button" id="btnFinishNow">🏁 여기까지로 결과 보기</button>
+        <button class="btn btn-danger" type="button" id="btnDiscard">🗑️ 삭제</button>
+      </div>
+    </div>
     <form class="card" id="startForm" autocomplete="off">
       <div class="grid grid-2">
         <label class="field"><span>학생 닉네임 *</span>
@@ -272,11 +341,7 @@ table.edit td.emoji input { width: 64px; min-width: 64px; text-align: center; fo
           <span>🌱</span><span>🌿</span><span>🌷</span><span>🌸</span>
         </div>
       </div>
-      <div class="student-card" id="studentCard">
-        <div class="big-emoji">🌱</div>
-        <h2>The garden is getting ready!</h2>
-        <p>Questions will grow here soon.</p>
-      </div>
+      <div class="student-card" id="studentCard"></div>
       <div class="pause-bar">
         <button class="btn btn-soft" id="btnPause" type="button">⏸ Pause</button>
       </div>
@@ -286,7 +351,7 @@ table.edit td.emoji input { width: 64px; min-width: 64px; text-align: center; fo
   <!-- =========================== 성장 리포트(4단계) =========================== -->
   <section data-screen="report" hidden>
     <h1 class="screen-title">🌸 성장 리포트</h1>
-    <div class="card"><p class="hint">4단계에서 완성됩니다.</p></div>
+    <div id="reportBody"><div class="card"><p class="hint">아직 결과가 없습니다.</p></div></div>
   </section>
 
   <!-- =========================== 꽃밭(학생 기록, 5단계) =========================== -->
@@ -765,11 +830,316 @@ const GeminiClient = createGeminiClient({
 
 
 /* =====================================================================
-   🧪 TestEngine / Scorer / Report — 3·4단계에서 채웁니다.
+   🌱 TestEngine — 적응형 테스트 진행 규칙 (화면과 분리된 순수 계산)
+   - 영역 순서: Phonics → Vocabulary → Grammar → Reading
+   - 학년으로 시작 레벨 결정 (예비초 L0, 1학년 L1 … 4학년 L4, 학습 경력 24개월 이상이면 +1)
+   - 한 레벨에서 3문항 이상 풀면 정답률 확인 (독해는 지문 1개 끝날 때마다)
+       · 80% 이상 → 한 단계 위로
+       · 40% 이하 → 한 단계 아래로 (그 레벨 "실패" 1회)
+       · 그 사이  → 같은 레벨 계속, 5문항(독해는 지문 2개)이면 "이 레벨이 맞다"로 종료
+   - 같은 레벨에서 2번 실패하면 그 영역 종료 (아이가 지치지 않도록)
+   - 이미 통과한 레벨로 내려가게 되면 바로 종료 (통과 레벨 = 도달 레벨)
+   - 영역당 최대 10문항, 전체 40분이 지나면 남은 영역은 건너뜀
    ===================================================================== */
-const TestEngine = {};
-const Scorer = {};
-const Report = {};
+const TestEngine = (() => {
+  const AREAS = ["phonics", "vocabulary", "grammar", "reading"];
+  const MAX_PER_AREA = 10;
+  const MIN_CHECK = 3;
+  const MAX_VISIT = 5;
+  const MAX_PASSAGES_PER_VISIT = 2;
+  const PASS_RATE = 0.8;
+  const FAIL_RATE = 0.4;
+  const MAX_FAILS = 2;
+  const TIME_LIMIT_MS = 40 * 60 * 1000;
+
+  function startLevel(grade, months) {
+    let lv = grade === "pre" ? 0 : Number(grade) || 0;
+    if (Number(months) >= 24) lv += 1;
+    return Math.max(0, Math.min(5, lv));
+  }
+
+  function newArea(name, level) {
+    return { name, level, startLevel: level, count: 0, passed: [], fails: {},
+             visit: { level, attempts: 0, correct: 0, passages: 0 },
+             byLevel: {}, done: false, endReason: null, reached: null };
+  }
+
+  function createSession(profile, now = Date.now()) {
+    const sl = startLevel(profile.grade, profile.months);
+    return {
+      id: "s" + now.toString(36),
+      profile, createdAt: now, startLevel: sl,
+      elapsedMs: 0, lastTick: now, paused: false,
+      areaIdx: 0, phase: "intro",               // intro | question | done
+      areas: AREAS.map(a => newArea(a, sl)),
+      currentId: null, queue: [], usedIds: [], usedPassages: [],
+      responses: [], timeUp: false
+    };
+  }
+
+  const area = (s) => s.areas[s.areaIdx];
+
+  function tick(s, now) {
+    if (!s.paused) s.elapsedMs += Math.max(0, now - s.lastTick);
+    s.lastTick = now;
+  }
+  function pause(s, now = Date.now()) { tick(s, now); s.paused = true; }
+  function resume(s, now = Date.now()) { s.paused = false; s.lastTick = now; }
+
+  function beginArea(s) { if (s.phase === "intro") s.phase = "question"; }
+
+  // 도달 레벨 계산
+  function computeReached(a) {
+    if (a.endReason === "stable") return a.level;
+    if (a.endReason === "ceiling") return 5;
+    const cands = [...a.passed];
+    const v = a.visit;
+    if (v.attempts >= 2 && v.correct / v.attempts >= 0.6) cands.push(v.level);
+    if (cands.length) return Math.max(...cands);
+    return Math.max(0, a.level - 1);
+  }
+
+  function endArea(s, reason) {
+    const a = area(s);
+    a.done = true;
+    a.endReason = reason;
+    a.reached = a.count > 0 ? computeReached(a) : null;
+    s.queue = [];
+    s.currentId = null;
+    advance(s);
+  }
+
+  function advance(s) {
+    if (s.timeUp) {
+      for (let i = s.areaIdx + 1; i < s.areas.length; i++) {
+        const b = s.areas[i];
+        if (!b.done) { b.done = true; b.endReason = "time"; b.reached = null; }
+      }
+      s.areaIdx = s.areas.length - 1;
+    }
+    if (s.areaIdx >= s.areas.length - 1) { s.phase = "done"; return; }
+    s.areaIdx += 1;
+    s.phase = "intro";
+  }
+
+  function setLevel(a, level) {
+    a.level = level;
+    a.visit = { level, attempts: 0, correct: 0, passages: 0 };
+  }
+
+  // 지금 풀 문제 (없으면 골라서 정함). 문제가 떨어지면 영역을 끝냄.
+  function currentItem(s, bank) {
+    while (s.phase === "question") {
+      if (s.currentId) {
+        const it = bank.find(q => q.id === s.currentId);
+        if (it) return it;
+        s.currentId = null;
+      }
+      const a = area(s);
+      if (s.queue.length) { s.currentId = s.queue.shift(); continue; }
+      const pool = bank.filter(q => q.area === a.name && q.level === a.level && !s.usedIds.includes(q.id));
+      if (a.name === "reading") {
+        const groups = {};
+        pool.forEach(q => { (groups[q.passage.id] = groups[q.passage.id] || []).push(q.id); });
+        const unused = Object.keys(groups).filter(pid => !s.usedPassages.includes(pid));
+        const fit = unused.filter(pid => a.count + groups[pid].length <= MAX_PER_AREA);
+        if (!fit.length) { endArea(s, unused.length ? "max-items" : "no-items"); continue; }
+        const pid = fit[Math.floor(Math.random() * fit.length)];
+        s.usedPassages.push(pid);
+        s.queue = groups[pid].slice();
+        a.visit.passages += 1;
+        continue;
+      }
+      if (!pool.length) { endArea(s, "no-items"); continue; }
+      s.currentId = pool[Math.floor(Math.random() * pool.length)].id;
+    }
+    return null;
+  }
+
+  // 답 기록 후 규칙 적용. correct = true/false
+  function answer(s, bank, correct, extra = {}, now = Date.now()) {
+    const item = currentItem(s, bank);
+    if (!item) return;
+    tick(s, now);
+    const a = area(s);
+    s.responses.push({ id: item.id, area: item.area, level: item.level, skill: item.skill, type: item.type,
+                       correct: !!correct, choice: extra.choice ?? null, retries: extra.retries || 0,
+                       passage: item.passage ? { id: item.passage.id, lexile: item.passage.lexile, ar: item.passage.ar } : null });
+    s.usedIds.push(item.id);
+    s.currentId = null;
+    a.count += 1;
+    a.visit.attempts += 1;
+    if (correct) a.visit.correct += 1;
+    const bl = a.byLevel[item.level] = a.byLevel[item.level] || { attempts: 0, correct: 0 };
+    bl.attempts += 1;
+    if (correct) bl.correct += 1;
+
+    if (s.elapsedMs >= TIME_LIMIT_MS) s.timeUp = true;
+
+    const isReading = a.name === "reading";
+    const checkpoint = isReading ? s.queue.length === 0 : a.visit.attempts >= MIN_CHECK;
+    if (checkpoint) {
+      const acc = a.visit.correct / a.visit.attempts;
+      if (acc >= PASS_RATE) {
+        if (!a.passed.includes(a.level)) a.passed.push(a.level);
+        if (a.level >= 5) return endArea(s, "ceiling");
+        setLevel(a, a.level + 1);
+      } else if (acc <= FAIL_RATE) {
+        a.fails[a.level] = (a.fails[a.level] || 0) + 1;
+        if (a.fails[a.level] >= MAX_FAILS) return endArea(s, "fail2");
+        if (a.level === 0) return endArea(s, "floor");
+        if (a.passed.includes(a.level - 1)) { setLevel(a, a.level - 1); return endArea(s, "confirmed"); }
+        setLevel(a, a.level - 1);
+      } else {
+        const visitFull = isReading ? a.visit.passages >= MAX_PASSAGES_PER_VISIT : a.visit.attempts >= MAX_VISIT;
+        if (visitFull) return endArea(s, "stable");
+      }
+    }
+    if (s.timeUp && (!isReading || s.queue.length === 0)) return endArea(s, "time");
+    if (a.count >= MAX_PER_AREA && s.queue.length === 0) return endArea(s, "max-items");
+  }
+
+  // 원장님이 중간에 "여기까지" 했을 때
+  function stopNow(s, now = Date.now()) {
+    tick(s, now);
+    for (let i = s.areaIdx; i < s.areas.length; i++) {
+      const a = s.areas[i];
+      if (a.done) continue;
+      a.done = true;
+      a.endReason = a.count > 0 ? "stopped" : "skipped";
+      a.reached = a.count > 0 ? computeReached(a) : null;
+    }
+    s.queue = []; s.currentId = null; s.phase = "done"; s.areaIdx = s.areas.length - 1;
+  }
+
+  // 꽃 진행 막대 (0~100)
+  function progress(s) {
+    if (s.phase === "done") return 100;
+    const a = area(s);
+    const within = a.done ? 1 : Math.min(1, a.count / MAX_PER_AREA);
+    return Math.round(((s.areaIdx + within) / s.areas.length) * 100);
+  }
+
+  return { AREAS, MAX_PER_AREA, TIME_LIMIT_MS, startLevel, createSession, beginArea, currentItem,
+           answer, pause, resume, stopNow, progress };
+})();
+
+
+/* =====================================================================
+   📊 Scorer — AI 없이 계산하는 로컬 추정 (백업용)
+   도달 레벨 → AR / Lexile 대략 범위로 바꿉니다.
+   ===================================================================== */
+const Scorer = (() => {
+  const LEVEL_MAP = [
+    { ar: [0.0, 0.5], lexile: ["BR", "BR200L"],  label: "K 초" },
+    { ar: [0.5, 1.5], lexile: ["BR200L", "200L"], label: "Grade 1" },
+    { ar: [1.5, 2.5], lexile: ["200L", "450L"],  label: "Grade 2" },
+    { ar: [2.5, 3.5], lexile: ["450L", "650L"],  label: "Grade 3" },
+    { ar: [3.5, 4.5], lexile: ["650L", "800L"],  label: "Grade 4" },
+    { ar: [4.5, null], lexile: ["800L", null],   label: "Grade 4+" }
+  ];
+  const AREA_KO = { phonics: "파닉스", vocabulary: "어휘", grammar: "문법", reading: "독해" };
+
+  function summarize(session) {
+    const areas = {};
+    for (const a of session.areas) {
+      const attempts = Object.values(a.byLevel).reduce((n, b) => n + b.attempts, 0);
+      const correct = Object.values(a.byLevel).reduce((n, b) => n + b.correct, 0);
+      const missed = session.responses.filter(r => r.area === a.name && !r.correct).map(r => r.skill);
+      areas[a.name] = { reached: a.reached, endReason: a.endReason, attempts, correct, byLevel: a.byLevel,
+                        missedSkills: [...new Set(missed)] };
+    }
+    return areas;
+  }
+
+  // 대표 레벨: 독해가 있으면 독해, 없으면 어휘·문법 평균(내림)
+  function baseLevel(areas) {
+    if (areas.reading && areas.reading.reached !== null) return areas.reading.reached;
+    const vg = ["vocabulary", "grammar"].map(k => areas[k] && areas[k].reached).filter(v => v !== null && v !== undefined);
+    if (vg.length) return Math.floor(vg.reduce((x, y) => x + y, 0) / vg.length);
+    if (areas.phonics && areas.phonics.reached !== null) return Math.min(1, areas.phonics.reached);
+    return null;
+  }
+
+  function pickClass(arMid, classes) {
+    if (arMid === null) return null;
+    let found = classes[0];
+    for (const c of classes) if (arMid >= c.arMin) found = c;
+    return found;
+  }
+
+  function localEstimate(session, classes) {
+    const areas = summarize(session);
+    const lv = baseLevel(areas);
+    if (lv === null) return { areas, level: null, ar: null, lexile: null, recommendedClass: null };
+    const m = LEVEL_MAP[lv];
+    const arMid = m.ar[1] === null ? m.ar[0] + 0.3 : (m.ar[0] + m.ar[1]) / 2;
+    const cls = pickClass(arMid, classes);
+    return { areas, level: lv,
+             ar: { min: m.ar[0], max: m.ar[1] }, lexile: { min: m.lexile[0], max: m.lexile[1] },
+             recommendedClass: cls ? `${cls.emoji} ${cls.name}` : null, journeys: cls ? cls.journeys : "" };
+  }
+
+  return { LEVEL_MAP, AREA_KO, summarize, localEstimate };
+})();
+
+
+/* =====================================================================
+   🌸 Report — 결과 화면 (지금은 로컬 추정 요약. AI 판정·차트·인쇄는 4단계)
+   ===================================================================== */
+const Report = (() => {
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const REASON_KO = { stable: "레벨 확인", ceiling: "최고 레벨 통과", fail2: "같은 레벨 2회 어려움", floor: "기초 단계",
+                      confirmed: "통과 레벨 확인", "max-items": "최대 문항", "no-items": "문항 소진",
+                      time: "시간 종료", stopped: "중간 종료", skipped: "미실시" };
+  const GRADE_KO = { pre: "예비초", 1: "1학년", 2: "2학년", 3: "3학년", 4: "4학년" };
+
+  function fmtRange(min, max, isAr) {
+    if (min === null || min === undefined) return "-";
+    if (max === null || max === undefined) return isAr ? `${min.toFixed(1)} 이상` : `${min} 이상`;
+    return isAr ? `${min.toFixed(1)} – ${max.toFixed(1)}` : `${min} – ${max}`;
+  }
+
+  function render(record) {
+    const { profile, local, responses, finishedAt } = record;
+    const date = new Date(finishedAt).toLocaleDateString("ko-KR");
+    const rows = TestEngine.AREAS.map(k => {
+      const a = local.areas[k];
+      const lv = a.reached === null ? "-" : `L${a.reached} (${Scorer.LEVEL_MAP[a.reached].label})`;
+      return `<tr><td><b>${Scorer.AREA_KO[k]}</b></td><td>${lv}</td><td>${a.correct}/${a.attempts}</td>
+        <td>${esc(REASON_KO[a.endReason] || "-")}</td><td>${a.missedSkills.map(esc).join(", ") || "-"}</td></tr>`;
+    }).join("");
+    const resp = responses.map((r, i) => `<tr><td>${i + 1}</td><td>${Scorer.AREA_KO[r.area]}</td><td>${esc(r.id)}</td>
+      <td>L${r.level}</td><td>${esc(r.skill)}</td><td>${esc(r.choice ?? "")}</td>
+      <td><span class="pill${r.correct ? "" : " no"}">${r.correct ? "정답" : "오답"}</span></td></tr>`).join("");
+    return `
+      <div class="card" style="margin-bottom:18px">
+        <h2>🌷 ${esc(profile.nickname)} · ${GRADE_KO[profile.grade] || ""} · ${date}</h2>
+        <p class="hint">로컬 추정 결과입니다. AI 판정·레이더 차트·인쇄용 리포트는 다음 단계에서 추가됩니다.</p>
+        <div class="grid grid-2">
+          <div><div class="hint">AR 추정 범위</div><div class="big-number">${fmtRange(local.ar && local.ar.min, local.ar && local.ar.max, true)}</div></div>
+          <div><div class="hint">Lexile 추정 범위</div><div class="big-number">${local.lexile ? fmtRange(local.lexile.min, local.lexile.max, false) : "-"}</div></div>
+          <div><div class="hint">추천 반</div><div class="big-number">${esc(local.recommendedClass || "-")}</div></div>
+          <div><div class="hint">Journeys 시작</div><div class="big-number">${esc(local.journeys || "-")}</div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:18px">
+        <h2>영역별 도달 레벨</h2>
+        <div class="table-wrap"><table class="plain">
+          <thead><tr><th>영역</th><th>도달 레벨</th><th>정답/시도</th><th>종료 사유</th><th>틀린 skill</th></tr></thead>
+          <tbody>${rows}</tbody></table></div>
+      </div>
+      <div class="card">
+        <h2>문항별 응답 기록 (원장용)</h2>
+        <div class="table-wrap"><table class="plain">
+          <thead><tr><th>#</th><th>영역</th><th>문항</th><th>레벨</th><th>skill</th><th>응답</th><th>결과</th></tr></thead>
+          <tbody>${resp || '<tr><td colspan="7">응답 없음</td></tr>'}</tbody></table></div>
+      </div>
+      <p class="hint" style="margin-top:14px">본 결과는 상담용 추정치이며 공식 AR/Lexile 점수가 아닙니다.</p>`;
+  }
+
+  return { render, fmtRange };
+})();
 
 
 /* =====================================================================
@@ -810,6 +1180,7 @@ const UI = (() => {
     document.documentElement.lang = student ? "en" : "ko";
     $("#brandName").textContent = student ? "Mint Teacher's English Garden" : "민트 선생님의 영어 정원";
     if (name === "settings") renderSettings();
+    if (name === "start") renderResumeCard();
     window.scrollTo(0, 0);
   }
 
@@ -973,8 +1344,182 @@ const UI = (() => {
     });
   }
 
+  /* ---------- 테스트 진행 (학생 화면: 영어만!) ---------- */
+  const BANK = window.QUESTION_BANK || [];
+  const CHEERS = ["Great job! 🌼", "Nice work! 🌷", "Keep growing! 🌱", "Wonderful! 🌸", "You're doing great! 🌻", "Thank you! 🌿"];
+  const AREA_INTRO = {
+    phonics:    { emoji: "🔤", title: "Let's Read Words!",  text: "Read each word out loud. Take your time!" },
+    vocabulary: { emoji: "🌼", title: "Word Garden",        text: "Look and choose the best word." },
+    grammar:    { emoji: "🌿", title: "Sentence Garden",    text: "Choose the word that fits the sentence." },
+    reading:    { emoji: "📖", title: "Story Time",         text: "Read the story. Then answer the questions." }
+  };
+  let session = null;
+  let busy = false;
+  let retries = 0;
+
+  const loadSession = () => (session = Storage.get("session", null));
+  const saveSession = () => { if (session) Storage.set("session", session); };
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+
+  function say(text) {
+    try {
+      if (!("speechSynthesis" in window)) return;
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US"; u.rate = 0.85;
+      const v = speechSynthesis.getVoices().find(x => x.lang === "en-US");
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch (e) { /* 음성 미지원 기기 */ }
+  }
+
+  function cheerThen(fn) {
+    busy = true;
+    const el = document.createElement("div");
+    el.className = "cheer";
+    el.innerHTML = `<div>${escapeHtml(CHEERS[Math.floor(Math.random() * CHEERS.length)])}</div>`;
+    document.body.appendChild(el);
+    setTimeout(() => { el.remove(); busy = false; fn(); }, 900);
+  }
+
+  function submit(correct, choice) {
+    if (busy || !session) return;
+    TestEngine.answer(session, BANK, correct, { choice, retries });
+    retries = 0;
+    saveSession();
+    cheerThen(renderTest);
+  }
+
+  function renderTest() {
+    const card = $("#studentCard");
+    if (!session) { show("start"); return; }
+    renderGrowth(TestEngine.progress(session));
+
+    if (session.phase === "intro") {
+      const a = session.areas[session.areaIdx];
+      const it = AREA_INTRO[a.name];
+      card.innerHTML = `<div class="big-emoji">${it.emoji}</div><h2>${it.title}</h2>
+        <p class="instruction">${it.text}</p>
+        <button class="btn btn-primary btn-big" id="btnBegin" type="button">🌱 Start</button>`;
+      $("#btnBegin").onclick = () => { TestEngine.beginArea(session); saveSession(); renderTest(); };
+      return;
+    }
+
+    const item = session.phase === "question" ? TestEngine.currentItem(session, BANK) : null;
+    saveSession();
+    if (!item) {
+      renderGrowth(100);
+      card.innerHTML = `<div class="big-emoji">🌸</div><h2>You did it!</h2>
+        <p class="instruction">Your English garden is blooming. Thank you!</p>
+        <button class="btn btn-primary btn-big" id="btnDone" type="button">🌸 Finish</button>`;
+      $("#btnDone").onclick = finishSession;
+      return;
+    }
+
+    if (item.type === "read-aloud") {
+      card.innerHTML = `<p class="instruction">${escapeHtml(item.prompt)}</p>
+        <div class="read-word">${escapeHtml(item.word)}</div>
+        <p class="retry-note" id="retryNote"></p>
+        <div class="teacher-bar">
+          <div class="tlabel">Teacher</div>
+          <div class="tbtns">
+            <button type="button" data-mark="yes" aria-label="Correct">✅</button>
+            <button type="button" data-mark="no" aria-label="Not yet">❌</button>
+            <button type="button" data-mark="again" aria-label="Try again">🔁</button>
+          </div>
+        </div>`;
+      card.querySelectorAll("[data-mark]").forEach(b => b.addEventListener("click", () => {
+        const m = b.dataset.mark;
+        if (m === "again") { retries += 1; $("#retryNote").textContent = "Let's try one more time! 🌱"; return; }
+        submit(m === "yes", m === "yes" ? "✅" : "❌");
+      }));
+      return;
+    }
+
+    // 객관식(그림/일반/지문)
+    const order = shuffle(item.choices.map((text, idx) => ({ text, idx })));
+    const short = order.every(o => o.text.length <= 12);
+    const choicesHtml = `<div class="choices${short && item.type !== "passage" ? " short" : ""}">` +
+      order.map(o => `<button type="button" class="choice" data-idx="${o.idx}">${escapeHtml(o.text)}</button>`).join("") + `</div>`;
+    const sayBtn = item.tts ? `<button type="button" class="btn btn-soft btn-say" id="btnSay">🔊 Listen</button>` : "";
+
+    if (item.type === "passage") {
+      const p = item.passage;
+      const qNo = session.responses.filter(r => r.passage && r.passage.id === p.id).length + 1;
+      const qTotal = BANK.filter(q => q.passage && q.passage.id === p.id).length;
+      card.innerHTML = `<div class="passage-layout">
+          <div class="passage-box"><h3>📖 ${escapeHtml(p.title)}</h3><p>${escapeHtml(p.text)}</p></div>
+          <div class="passage-q"><p class="instruction">Question ${qNo} of ${qTotal}</p>
+            <p class="prompt">${escapeHtml(item.prompt)}</p>${choicesHtml}</div>
+        </div>`;
+    } else {
+      card.innerHTML = `${item.picture ? `<div class="picture">${item.picture}</div>` : ""}
+        <p class="prompt">${escapeHtml(item.prompt)}</p>${sayBtn}${choicesHtml}`;
+    }
+    if (item.tts) { $("#btnSay").onclick = () => say(item.tts); }
+    card.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => {
+      if (busy) return;
+      card.querySelectorAll(".choice").forEach(x => { x.disabled = true; });
+      b.classList.add("picked");
+      const idx = Number(b.dataset.idx);
+      submit(idx === item.answer, item.choices[idx]);
+    }));
+  }
+
+  function finishSession() {
+    if (!session) return;
+    const now = Date.now();
+    if (session.phase !== "done") TestEngine.stopNow(session, now);
+    const record = {
+      id: session.id, profile: session.profile, startedAt: session.createdAt, finishedAt: now,
+      elapsedMs: session.elapsedMs, startLevel: session.startLevel,
+      responses: session.responses,
+      local: Scorer.localEstimate(session, Storage.getClasses())
+    };
+    const records = Storage.get("records", []);
+    records.unshift(record);
+    Storage.set("records", records);
+    Storage.set("lastResult", record);
+    Storage.remove("session");
+    session = null;
+    $("#reportBody").innerHTML = Report.render(record);
+    show("report");
+  }
+
+  function renderResumeCard() {
+    loadSession();
+    const card = $("#resumeCard");
+    if (!session) { card.hidden = true; return; }
+    const a = session.areas[session.areaIdx];
+    const min = Math.round(session.elapsedMs / 60000);
+    $("#resumeInfo").textContent = `${session.profile.nickname} · ${Scorer.AREA_KO[a.name]} 영역 진행 중 · 응답 ${session.responses.length}개 · 약 ${min}분 경과`;
+    card.hidden = false;
+  }
+
   /* ---------- 시작 화면 ---------- */
   function bindStart() {
+    $("#btnResume").addEventListener("click", () => {
+      loadSession();
+      if (!session) return;
+      TestEngine.resume(session); saveSession();
+      show("test"); renderTest();
+    });
+    $("#btnFinishNow").addEventListener("click", () => {
+      loadSession();
+      if (!session) return;
+      if (!confirm("지금까지 푼 문항으로 결과를 만들까요? (남은 영역은 '미실시'로 표시됩니다)")) return;
+      finishSession();
+    });
+    $("#btnDiscard").addEventListener("click", () => {
+      if (!confirm("진행 중인 테스트를 삭제할까요? 되돌릴 수 없습니다.")) return;
+      Storage.remove("session"); session = null; renderResumeCard();
+    });
+
     $("#startForm").addEventListener("submit", (ev) => {
       ev.preventDefault();
       const fd = new FormData(ev.currentTarget);
@@ -989,16 +1534,21 @@ const UI = (() => {
         setStatus("startStatus", "닉네임과 학년을 입력해 주세요.", "warn");
         return;
       }
-      Storage.set("draftProfile", profile); // 3단계에서 진행 상태 저장으로 확장
+      if (!BANK.length) { setStatus("startStatus", "문제은행(questions.js)을 불러오지 못했습니다.", "error"); return; }
+      if (Storage.get("session", null) && !confirm("진행 중인 테스트가 있습니다. 삭제하고 새로 시작할까요?")) return;
+      session = TestEngine.createSession(profile);
+      saveSession();
+      ev.currentTarget.reset();
       setStatus("startStatus", "");
-      renderGrowth(0);
       show("test");
+      renderTest();
     });
 
     $("#btnPause").addEventListener("click", () => {
-      // 일시정지는 원장님만: 학생 화면을 벗어나 시작 화면으로 (3단계에서 이어하기 연결)
+      if (session) { TestEngine.pause(session); saveSession(); }
+      if ("speechSynthesis" in window) speechSynthesis.cancel();
       show("start");
-      toast("⏸ 일시정지했습니다.");
+      toast("⏸ 일시정지했습니다. '이어하기'로 계속할 수 있어요.");
     });
   }
 
@@ -1131,12 +1681,112 @@ const SelfTest = (() => {
     check("key는 헤더로만 전송(URL에 없음)", sentHeaders["x-goog-api-key"] === "secret-key-123" && !sentUrl.includes("secret-key"));
   }
 
+  /* ---------- TestEngine 적응형 규칙 점검 ---------- */
+  // 시험용 문제은행: 영역별 레벨마다 8문항, 독해는 레벨마다 지문 2개 × 3문항
+  function fakeBank() {
+    const b = [];
+    for (const area of ["phonics", "vocabulary", "grammar"]) {
+      for (let lv = 0; lv <= 5; lv++) for (let i = 0; i < 8; i++) {
+        b.push({ id: `${area}-${lv}-${i}`, area, level: lv, type: "mcq", choices: ["a", "b"], answer: 0, skill: `s${lv}` });
+      }
+    }
+    for (let lv = 0; lv <= 5; lv++) for (let p = 0; p < 2; p++) {
+      const passage = { id: `P${lv}${p}`, lexile: "x", ar: lv };
+      for (let i = 0; i < 3; i++) b.push({ id: `r-${lv}-${p}-${i}`, area: "reading", level: lv, type: "passage", choices: ["a", "b"], answer: 0, skill: "r", passage });
+    }
+    return b;
+  }
+  // 한 영역을 정해진 정답 패턴으로 풀어 보고 결과 반환
+  function runArea(areaName, grade, pattern, months = 0) {
+    const bank = fakeBank();
+    const s = TestEngine.createSession({ nickname: "t", grade, months }, 0);
+    s.areaIdx = TestEngine.AREAS.indexOf(areaName);
+    s.phase = "question";
+    let i = 0;
+    while (s.phase === "question" && s.areaIdx === TestEngine.AREAS.indexOf(areaName) && i < 50) {
+      if (!TestEngine.currentItem(s, bank)) break;
+      const correct = typeof pattern === "function" ? pattern(i) : pattern[i % pattern.length];
+      TestEngine.answer(s, bank, correct, {}, 1000 * (i + 1));
+      i++;
+    }
+    return s.areas[TestEngine.AREAS.indexOf(areaName)];
+  }
+
+  function testEngine() {
+    check("시작 레벨: 예비초 L0 / 2학년 L2 / 4학년 L4", TestEngine.startLevel("pre", 0) === 0 && TestEngine.startLevel("2", 6) === 2 && TestEngine.startLevel("4", 0) === 4);
+    check("시작 레벨: 학습 24개월 이상이면 +1", TestEngine.startLevel("2", 24) === 3 && TestEngine.startLevel("4", 36) === 5);
+
+    let a = runArea("vocabulary", "2", [true]);
+    check(`전부 정답(2학년): L2→L3→L4 통과, 10문항에서 종료 → 도달 L4 (실제 L${a.reached}, ${a.count}문항)`, a.reached === 4 && a.count === 10 && a.endReason === "max-items");
+
+    a = runArea("grammar", "4", [true]);
+    check(`전부 정답(4학년): L5까지 통과 → 도달 L5 (실제 L${a.reached}, ${a.endReason})`, a.reached === 5 && a.endReason === "ceiling" && a.count === 6);
+
+    a = runArea("vocabulary", "2", [false]);
+    check(`전부 오답(2학년): L2→L1→L0 내려가 종료 → 도달 L0 (실제 L${a.reached}, ${a.count}문항)`, a.reached === 0 && a.endReason === "floor" && a.count === 9);
+
+    a = runArea("grammar", "2", [true, false]);
+    check(`중간(정답·오답 번갈아): 5문항 60% → L2 확정 (실제 L${a.reached}, ${a.endReason})`, a.reached === 2 && a.endReason === "stable" && a.count === 5);
+
+    a = runArea("vocabulary", "2", [true, true, true, false, false, false]);
+    check(`L2 통과 후 L3 실패 → 도달 L2 (실제 L${a.reached}, ${a.endReason})`, a.reached === 2 && a.endReason === "confirmed" && a.count === 6);
+
+    a = runArea("grammar", "3", [false, false, false, true, true, true, false, false, false]);
+    check(`같은 레벨(L3) 2번 실패 → 영역 종료, 도달 L2 (실제 L${a.reached}, ${a.endReason})`, a.reached === 2 && a.endReason === "fail2" && a.count === 9);
+
+    a = runArea("phonics", "2", () => Math.random() < 0.5);
+    check("무작위 응답에도 영역당 최대 10문항", a.count <= 10 && a.done);
+
+    a = runArea("reading", "2", [true]);
+    check(`독해 전부 정답(2학년): 지문 단위 진행, 도달 L4 (실제 L${a.reached}, ${a.count}문항)`, a.reached === 4 && a.count === 9);
+
+    a = runArea("reading", "2", [true, true, false]);
+    check(`독해 지문마다 2/3 → 지문 2개 후 L2 확정 (실제 L${a.reached}, ${a.endReason})`, a.reached === 2 && a.endReason === "stable" && a.count === 6);
+
+    // 40분 제한
+    const bank = fakeBank();
+    const s = TestEngine.createSession({ nickname: "t", grade: "2", months: 0 }, 0);
+    TestEngine.beginArea(s);
+    TestEngine.currentItem(s, bank);
+    TestEngine.answer(s, bank, true, {}, TestEngine.TIME_LIMIT_MS + 1);
+    check("40분이 지나면 남은 영역 건너뛰고 종료", s.phase === "done" && s.areas[3].endReason === "time");
+  }
+
+  function testBank() {
+    const bank = window.QUESTION_BANK || [];
+    const ids = new Set();
+    let dup = false, bad = [];
+    for (const q of bank) {
+      if (ids.has(q.id)) dup = true;
+      ids.add(q.id);
+      if (q.type !== "read-aloud") {
+        if (!Array.isArray(q.choices) || q.choices.length < 2 || !(q.answer >= 0 && q.answer < q.choices.length)) bad.push(q.id);
+        if (new Set(q.choices).size !== q.choices.length) bad.push(q.id);
+      } else if (!q.word) bad.push(q.id);
+    }
+    check("문제은행: 문항 번호 중복 없음", !dup && bank.length > 0);
+    check("문제은행: 보기·정답 형식 올바름" + (bad.length ? " (" + bad.join(", ") + ")" : ""), bad.length === 0);
+    const short = [];
+    for (const area of ["phonics", "vocabulary", "grammar", "reading"]) for (let lv = 0; lv <= 5; lv++) {
+      const n = bank.filter(q => q.area === area && q.level === lv).length;
+      if (n < 6) short.push(`${area} L${lv}: ${n}`);
+      if (area === "reading") {
+        const ps = new Set(bank.filter(q => q.area === area && q.level === lv).map(q => q.passage.id));
+        if (ps.size < 2) short.push(`reading L${lv} 지문 ${ps.size}개`);
+      }
+    }
+    check("문제은행: 영역×레벨마다 6문항 이상, 독해 지문 2개 이상" + (short.length ? " (" + short.join(", ") + ")" : ""), short.length === 0);
+    check("문제은행: 학생 화면용 문장에 한국어 없음", !bank.some(q => /[가-힣]/.test([q.prompt, q.word, ...(q.choices || []), q.passage && q.passage.text].join(" "))));
+  }
+
   async function run() {
     console.log("🧪 민트 정원 자가 점검 시작");
     results.length = 0;
     testRpm(); testRpd(); testPtReset(); testFallback();
     await test429();
     await testErrorKinds();
+    testEngine();
+    testBank();
     const passed = results.filter(r => r.ok).length;
     console.log(`🧪 결과: ${passed}/${results.length} 통과`);
     const panel = document.getElementById("testPanel");
