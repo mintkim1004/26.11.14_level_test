@@ -244,6 +244,23 @@ table.plain th { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
 .pill.no { background: var(--danger-bg); color: var(--danger); }
 .pill.warn { background: var(--warn-bg); color: #7a5312; }
 
+/* ---------- 🌼 꽃밭 ---------- */
+#recordStatus:empty { display: none; }
+.records-tools { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.records-tools input[type="text"] { flex: 1; min-width: 200px; }
+.record-list { display: grid; gap: 12px; }
+.record-item {
+  display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px 20px; box-shadow: var(--shadow);
+}
+.record-item .who { font-size: 1.15rem; font-weight: 800; color: var(--mint-900); }
+.record-item .meta { color: var(--muted); font-size: 0.92rem; display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 4px; }
+.record-item .meta b { color: var(--ink); }
+.record-item .btn-row { margin: 0; }
+.empty-garden { text-align: center; padding: 40px 20px; color: var(--muted); }
+.empty-garden .big-emoji { font-size: 3.5rem; }
+@media (max-width: 640px) { .record-item { grid-template-columns: 1fr; } }
+
 /* ---------- 🌸 성장 리포트 ---------- */
 .report-tools { margin-bottom: 14px; }
 .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
@@ -432,8 +449,19 @@ table.plain th { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
   <!-- =========================== 꽃밭(학생 기록, 5단계) =========================== -->
   <section data-screen="records" hidden>
     <h1 class="screen-title">🌼 꽃밭</h1>
-    <p class="screen-lead">테스트한 학생 기록</p>
-    <div class="card"><p class="hint">5단계에서 완성됩니다.</p></div>
+    <p class="screen-lead">우리 정원을 다녀간 꽃들의 기록입니다. 기록은 이 기기(브라우저)에만 저장되니 가끔 백업해 주세요.</p>
+    <div class="card" style="margin-bottom:18px">
+      <div class="records-tools">
+        <input type="text" id="recordSearch" placeholder="🔍 닉네임으로 찾기" aria-label="닉네임 검색">
+        <div class="btn-row" style="margin:0">
+          <button class="btn btn-soft" type="button" id="btnExport">📤 백업 파일 내보내기</button>
+          <button class="btn btn-soft" type="button" id="btnImport">📥 백업 파일 가져오기</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+      </div>
+      <p class="status-line" id="recordStatus" role="status"></p>
+    </div>
+    <div id="recordList"></div>
   </section>
 
   <!-- =========================== 설정 화면 =========================== -->
@@ -599,8 +627,40 @@ const Storage = (() => {
   function setClasses(list) { return set("classes", list); }
   function resetClasses() { remove("classes"); }
 
+  /* ---------- 백업 (JSON 내보내기/가져오기) ----------
+     API key와 사용량 기록은 백업 파일에 넣지 않습니다. */
+  const BACKUP_APP = "mint-level-test";
+
+  function exportData(now = Date.now()) {
+    return { app: BACKUP_APP, version: 1, exportedAt: new Date(now).toISOString(),
+             records: get("records", []), settings: { classes: getClasses(), models: getModels() } };
+  }
+
+  function isValidRecord(r) {
+    return !!(r && typeof r.id === "string" && r.profile && typeof r.profile.nickname === "string"
+      && Array.isArray(r.responses) && r.local && r.local.areas && typeof r.finishedAt === "number");
+  }
+
+  // 기존 기록 + 백업 기록 합치기 (같은 기록은 건너뜀). 저장은 하지 않고 결과만 돌려줍니다.
+  function mergeRecords(existing, data) {
+    if (!data || data.app !== BACKUP_APP || !Array.isArray(data.records)) return { ok: false };
+    const ids = new Set(existing.map(r => r.id));
+    let added = 0, skipped = 0, invalid = 0;
+    const list = existing.slice();
+    for (const r of data.records) {
+      if (!isValidRecord(r)) { invalid++; continue; }
+      if (ids.has(r.id)) { skipped++; continue; }
+      const clean = { ...r, aiPending: false };
+      delete clean.apiKey;
+      list.push(clean); ids.add(r.id); added++;
+    }
+    list.sort((a, b) => b.finishedAt - a.finishedAt);
+    return { ok: true, list, added, skipped, invalid };
+  }
+
   return { get, set, remove, getApiKey, setApiKey, clearApiKey, hasApiKey,
-           getModels, setModels, resetModels, getClasses, setClasses, resetClasses };
+           getModels, setModels, resetModels, getClasses, setClasses, resetClasses,
+           exportData, mergeRecords };
 })();
 
 // 시험용 임시 저장소 — 자가 점검·모의 모드에서 실제 기록을 건드리지 않도록 메모리에만 저장
@@ -1631,6 +1691,7 @@ const UI = (() => {
     $("#brandName").textContent = student ? "Mint Teacher's English Garden" : "민트 선생님의 영어 정원";
     if (name === "settings") renderSettings();
     if (name === "start") renderResumeCard();
+    if (name === "records") { setStatus("recordStatus", ""); renderRecords(); }
     window.scrollTo(0, 0);
   }
 
@@ -1930,7 +1991,8 @@ const UI = (() => {
       elapsedMs: session.elapsedMs, startLevel: session.startLevel,
       responses: session.responses,
       local: Scorer.localEstimate(session, Storage.getClasses()),
-      ai: null, aiStatus: null, teacherComment: ""
+      ai: null, aiStatus: null, teacherComment: "",
+      mock: !!MOCK_MODE // 모의 모드에서 만든 기록 표시
     };
     const records = Storage.get("records", []);
     records.unshift(record);
@@ -2049,6 +2111,85 @@ const UI = (() => {
     if (reportId === id) openReport(id);
   }
 
+  /* ---------- 🌼 꽃밭 (학생 기록) ---------- */
+  const GRADE_LABEL = { pre: "예비초", 1: "1학년", 2: "2학년", 3: "3학년", 4: "4학년" };
+
+  function renderRecords() {
+    const q = ($("#recordSearch").value || "").trim().toLowerCase();
+    const all = Storage.get("records", []);
+    const list = all.filter(r => !q || r.profile.nickname.toLowerCase().includes(q));
+    const box = $("#recordList");
+    if (!all.length) {
+      box.innerHTML = `<div class="card empty-garden"><div class="big-emoji">🌱</div>
+        <p>아직 꽃밭이 비어 있어요.<br>🏡 새 테스트로 첫 번째 꽃을 맞이해 보세요!</p></div>`;
+      return;
+    }
+    if (!list.length) { box.innerHTML = `<div class="card empty-garden"><p>'${escapeHtml(q)}'(으)로 찾은 기록이 없어요.</p></div>`; return; }
+    box.innerHTML = `<div class="record-list">${list.map(r => {
+      const v = Report.compose(r);
+      const date = new Date(r.finishedAt).toLocaleDateString("ko-KR");
+      const src = (r.mock ? "🎭 모의 모드 기록 · " : "") + (r.ai ? (r.ai.modelKey === "lite" ? "🍃 AI(가벼운 모델)" : "🤖 AI 판정") : "🌱 로컬 추정");
+      return `<div class="record-item">
+        <div>
+          <div class="who">🌸 ${escapeHtml(r.profile.nickname)} <small style="color:var(--muted);font-weight:600">· ${GRADE_LABEL[r.profile.grade] || ""}</small></div>
+          <div class="meta"><span>📅 ${date}</span><span>추천 반 <b>${escapeHtml(v.className || "-")}</b></span>
+            <span>AR <b>${Report.fmtAr(v.ar && v.ar.min, v.ar && v.ar.max)}</b></span>
+            <span>Lexile <b>${v.lexile ? Report.fmtLexile(v.lexile.min, v.lexile.max) : "-"}</b></span><span>${src}</span></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" data-view="${escapeHtml(r.id)}">🌷 다시 보기</button>
+          <button class="btn btn-danger" type="button" data-del="${escapeHtml(r.id)}" aria-label="삭제">🗑️</button>
+        </div>
+      </div>`;
+    }).join("")}</div>`;
+    $$("#recordList [data-view]").forEach(b => b.addEventListener("click", () => openReport(b.dataset.view, "parent")));
+    $$("#recordList [data-del]").forEach(b => b.addEventListener("click", () => {
+      const r = getRecord(b.dataset.del);
+      if (!r || !confirm(`${r.profile.nickname} 학생의 기록을 삭제할까요?\n삭제하면 되돌릴 수 없어요. (먼저 백업을 권장합니다)`)) return;
+      Storage.set("records", Storage.get("records", []).filter(x => x.id !== r.id));
+      renderRecords();
+      toast("🗑️ 기록을 삭제했습니다.");
+    }));
+  }
+
+  function bindRecords() {
+    $("#recordSearch").addEventListener("input", renderRecords);
+
+    $("#btnExport").addEventListener("click", () => {
+      const data = Storage.exportData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      const d = new Date();
+      const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      a.href = URL.createObjectURL(blob);
+      a.download = `mint-garden-backup-${stamp}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      setStatus("recordStatus", `📤 기록 ${data.records.length}개를 백업 파일로 저장했어요. (API key는 포함되지 않습니다)`, "ok");
+    });
+
+    $("#btnImport").addEventListener("click", () => $("#importFile").click());
+    $("#importFile").addEventListener("change", async (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      ev.target.value = "";
+      if (!file) return;
+      let data;
+      try { data = JSON.parse(await file.text()); } catch (e) { data = null; }
+      const res = Storage.mergeRecords(Storage.get("records", []), data);
+      if (!res.ok) { setStatus("recordStatus", "이 파일은 민트 정원 백업 파일이 아니에요. 📤 내보내기로 만든 파일을 골라 주세요.", "error"); return; }
+      if (!confirm(`백업 파일에서 새 기록 ${res.added}개를 추가할까요?\n(이미 있는 기록 ${res.skipped}개는 건너뜁니다)`)) return;
+      Storage.set("records", res.list);
+      if (data.settings && Array.isArray(data.settings.classes) && data.settings.classes.length === 4
+          && confirm("백업 파일에 반 설정도 있어요. 반 설정도 백업 파일 내용으로 바꿀까요?")) {
+        Storage.setClasses(data.settings.classes);
+      }
+      renderRecords();
+      setStatus("recordStatus", `📥 ${res.added}개 추가, ${res.skipped}개 건너뜀${res.invalid ? `, 손상된 기록 ${res.invalid}개 제외` : ""}.`, "ok");
+    });
+  }
+
   function renderResumeCard() {
     loadSession();
     const card = $("#resumeCard");
@@ -2114,6 +2255,7 @@ const UI = (() => {
     $$("[data-nav]").forEach(b => b.addEventListener("click", () => show(b.dataset.nav)));
     bindSettings();
     bindStart();
+    bindRecords();
     if (MOCK_MODE) {
       const banner = $("#modeBanner");
       banner.hidden = false;
@@ -2400,6 +2542,19 @@ const SelfTest = (() => {
     check("로컬 요약 문장 생성", Scorer.localSummary(rec).length > 20);
   }
 
+  /* ---------- 백업 내보내기/가져오기 점검 ---------- */
+  function testBackup() {
+    const mk = (id, t) => ({ id, finishedAt: t, profile: { nickname: id, grade: "2" }, responses: [], local: { areas: {} } });
+    const data = { app: "mint-level-test", version: 1, records: [mk("a", 1), mk("b", 3), { id: "broken" }] };
+    const r = Storage.mergeRecords([mk("a", 1), mk("c", 2)], data);
+    check("백업 가져오기: 새 기록만 추가, 중복은 건너뜀, 손상 기록 제외", r.ok && r.added === 1 && r.skipped === 1 && r.invalid === 1 && r.list.length === 3);
+    check("백업 가져오기: 최신순 정렬", r.list.map(x => x.id).join() === "b,c,a");
+    check("백업 가져오기: 다른 파일은 거절", !Storage.mergeRecords([], { records: [] }).ok && !Storage.mergeRecords([], null).ok);
+    const exp = JSON.stringify(Storage.exportData());
+    const key = Storage.getApiKey();
+    check("백업 내보내기: API key 미포함", !/apiKey/.test(exp) && (!key || !exp.includes(key)));
+  }
+
   async function run() {
     console.log("🧪 민트 정원 자가 점검 시작");
     results.length = 0;
@@ -2409,6 +2564,7 @@ const SelfTest = (() => {
     testEngine();
     testBank();
     await testJudge();
+    testBackup();
     const passed = results.filter(r => r.ok).length;
     console.log(`🧪 결과: ${passed}/${results.length} 통과`);
     const panel = document.getElementById("testPanel");
