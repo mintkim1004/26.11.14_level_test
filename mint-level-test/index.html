@@ -242,6 +242,81 @@ table.plain th { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
 .big-number { font-size: 1.5rem; font-weight: 800; color: var(--mint-900); }
 .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--mint-100); color: var(--mint-900); font-weight: 700; font-size: 0.85rem; }
 .pill.no { background: var(--danger-bg); color: var(--danger); }
+.pill.warn { background: var(--warn-bg); color: #7a5312; }
+
+/* ---------- 🌸 성장 리포트 ---------- */
+.report-tools { margin-bottom: 14px; }
+.tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.tab {
+  min-height: 48px; padding: 0 20px; border-radius: 999px; border: 2px solid var(--mint-300);
+  background: #fff; color: var(--mint-900); font: inherit; font-weight: 800; cursor: pointer;
+}
+.tab[aria-selected="true"] { background: var(--mint-600); border-color: var(--mint-600); color: #fff; }
+.ai-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.ai-bar .pill { font-size: 0.95rem; padding: 6px 14px; }
+.sms-card textarea { min-height: 110px; font-size: 0.95rem; }
+.sheet { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow); }
+.sheet-head {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  border-bottom: 3px solid var(--leaf); padding-bottom: 12px; margin-bottom: 16px;
+}
+.sheet-brand { display: flex; align-items: center; gap: 12px; }
+.sheet-school { font-weight: 800; color: var(--mint-600); font-size: 0.95rem; }
+.sheet-title { font-weight: 800; color: var(--mint-900); font-size: 1.5rem; line-height: 1.2; }
+.sheet-meta { text-align: right; color: var(--muted); font-size: 0.95rem; }
+.sheet-meta b { color: var(--ink); font-size: 1.15rem; }
+.sheet-top { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: center; }
+.radar-wrap canvas { width: 100%; max-width: 300px; height: auto; aspect-ratio: 1 / 1; display: block; margin: 0 auto; }
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.kpi { background: var(--mint-100); border-radius: var(--radius); padding: 12px 16px; }
+.kpi .k { font-size: 0.85rem; color: var(--muted); font-weight: 700; }
+.kpi .v { font-size: 1.45rem; font-weight: 800; color: var(--mint-900); }
+.kpi.class { grid-column: span 2; background: #f6fbe9; border: 2px solid var(--leaf); }
+.area-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
+.area-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
+.area-card h4 { margin: 0 0 4px; display: flex; justify-content: space-between; gap: 8px; color: var(--mint-900); font-size: 1.05rem; }
+.area-card h4 .lv { font-size: 0.9rem; color: var(--mint-600); }
+.area-card .ai-grade { font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+.area-card ul { margin: 2px 0 6px; padding-left: 1.2em; font-size: 0.92rem; }
+.lbl { font-size: 0.82rem; font-weight: 800; color: var(--mint-600); }
+.lbl.gap { color: #c0607a; }
+.summary-box { margin-top: 16px; background: var(--cream); border-left: 6px solid var(--mint-300); padding: 12px 16px; border-radius: 12px; }
+.summary-box p { margin: 4px 0 0; }
+.comment-box { margin-top: 14px; }
+.comment-box textarea { margin-top: 6px; min-height: 80px; }
+.comment-box .print-only { white-space: pre-wrap; margin: 4px 0 0; min-height: 3em; border-bottom: 1px dashed var(--line); }
+.print-only { display: none; }
+.disclaimer { font-size: 0.8rem; color: var(--muted); text-align: center; margin: 16px 0 0; }
+@media (max-width: 760px) {
+  .sheet { padding: 18px; }
+  .sheet-top { grid-template-columns: 1fr; }
+  .area-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- 🖨️ 인쇄 (학부모용 A4 1장) ---------- */
+@media print {
+  @page { size: A4; margin: 10mm; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; font-size: 10pt; min-height: 0; }
+  .app-header, .mode-banner, .toast, .no-print, #teacherPane, .screen-title,
+  [data-screen]:not([data-screen="report"]) { display: none !important; }
+  #parentPane { display: block !important; }
+  main { max-width: none; padding: 0; }
+  .sheet { border: 0; box-shadow: none; padding: 0; border-radius: 0; }
+  .sheet-head { padding-bottom: 6px; margin-bottom: 8px; }
+  .sheet-title { font-size: 16pt; }
+  .sheet-top { grid-template-columns: 62mm 1fr; gap: 6mm; }
+  .radar-wrap canvas { max-width: 62mm; }
+  .kpi { padding: 6px 10px; }
+  .kpi .v { font-size: 13pt; }
+  .area-grid { grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+  .area-card { padding: 6px 10px; break-inside: avoid; }
+  .area-card ul { font-size: 9pt; margin: 0 0 3px; }
+  .summary-box { margin-top: 8px; padding: 8px 12px; break-inside: avoid; }
+  .comment-box { margin-top: 8px; break-inside: avoid; }
+  .print-only { display: block; }
+  .disclaimer { margin-top: 8px; font-size: 8pt; }
+}
 
 /* ---------- 토스트 ---------- */
 .toast {
@@ -775,7 +850,90 @@ function createGeminiClient({ limiter, getKey, getModels, fetchImpl }) {
     }
   }
 
-  return { call, extractText, testConnection, generateJson, describeError };
+  /* ---------- 🌸 AI 최종 판정 (학생 1명당 1회 원칙) ---------- */
+  const JUDGE_SYSTEM = [
+    "You are an experienced US elementary reading specialist. Estimate levels conservatively from the given data only. Return ranges, not single points.",
+    "The data comes from a short adaptive placement test for a Korean EFL child (max 10 items per area; phonics is teacher-observed oral reading).",
+    "Level scale: L0=Kindergarten early, L1=Grade 1, L2=Grade 2, L3=Grade 3, L4=Grade 4, L5=above Grade 4.",
+    "recommendedClass must be exactly one of the class names provided in the data.",
+    "journeysStart uses the form 'Kindergarten, Unit 1' or 'Grade 2, Unit 1'.",
+    "Lexile values are strings such as 'BR200L', '150L', '450L'. ar.min and ar.max are numbers with one decimal, min <= max.",
+    "strengths and gaps: short English skill phrases (1-3 each).",
+    "parentSummaryKo: 3-5 warm, clear Korean sentences for parents (no student name). teacherNotesKo: 3-5 numbered Korean teaching points.",
+    "Set confidence to 'low' when few items were answered or an area was skipped."
+  ].join(" ");
+
+  const S = (type, extra = {}) => ({ type, ...extra });
+  const STR_ARR = S("ARRAY", { items: S("STRING") });
+  const AREA_GRADE = S("OBJECT", { properties: { gradeEquivalent: S("STRING"), strengths: STR_ARR, gaps: STR_ARR },
+                                   required: ["gradeEquivalent", "strengths", "gaps"] });
+  const JUDGE_SCHEMA = S("OBJECT", {
+    properties: {
+      areas: S("OBJECT", {
+        properties: {
+          phonics: S("OBJECT", { properties: { level: S("STRING"), stage: S("STRING"), strengths: STR_ARR, gaps: STR_ARR },
+                                 required: ["level", "stage", "strengths", "gaps"] }),
+          vocabulary: AREA_GRADE, grammar: AREA_GRADE, reading: AREA_GRADE
+        },
+        required: ["phonics", "vocabulary", "grammar", "reading"]
+      }),
+      ar: S("OBJECT", { properties: { min: S("NUMBER"), max: S("NUMBER") }, required: ["min", "max"] }),
+      lexile: S("OBJECT", { properties: { min: S("STRING"), max: S("STRING") }, required: ["min", "max"] }),
+      recommendedClass: S("STRING"),
+      journeysStart: S("STRING"),
+      parentSummaryKo: S("STRING"),
+      teacherNotesKo: S("STRING"),
+      confidence: S("STRING", { enum: ["low", "medium", "high"] })
+    },
+    required: ["areas", "ar", "lexile", "recommendedClass", "journeysStart", "parentSummaryKo", "teacherNotesKo", "confidence"]
+  });
+
+  // 응답이 약속한 모양인지 확인
+  function validateJudgement(j) {
+    const isStr = (v) => typeof v === "string" && v.trim().length > 0;
+    const isArr = (v) => Array.isArray(v) && v.every(x => typeof x === "string");
+    if (!j || typeof j !== "object" || !j.areas) return false;
+    const p = j.areas.phonics;
+    if (!p || !isStr(p.level) || typeof p.stage !== "string" || !isArr(p.strengths) || !isArr(p.gaps)) return false;
+    for (const k of ["vocabulary", "grammar", "reading"]) {
+      const a = j.areas[k];
+      if (!a || !isStr(a.gradeEquivalent) || !isArr(a.strengths) || !isArr(a.gaps)) return false;
+    }
+    if (!j.ar || typeof j.ar.min !== "number" || typeof j.ar.max !== "number") return false;
+    if (j.ar.min < 0 || j.ar.max > 13 || j.ar.min > j.ar.max) return false;
+    if (!j.lexile || !isStr(j.lexile.min) || !isStr(j.lexile.max)) return false;
+    if (!isStr(j.recommendedClass) || !isStr(j.journeysStart) || !isStr(j.parentSummaryKo) || !isStr(j.teacherNotesKo)) return false;
+    return ["low", "medium", "high"].includes(j.confidence);
+  }
+
+  // 판정 순서: 모델 고르기 → 호출 → 모양 확인 → (형식 오류일 때만) lite로 1회 재요청
+  async function judge(payload) {
+    const choice = limiter.chooseModel();
+    if (!choice.ok) {
+      return { ok: false, error: new GeminiError(choice.reason === "rpm" ? "rpm-local" : "daily-local", { waitMs: choice.waitMs }) };
+    }
+    const userText = "Placement test data (JSON):\n" + JSON.stringify(payload) + "\n\nReturn one JSON object that follows the response schema.";
+    const ask = (modelKey) => generateJson({ modelKey, systemText: JUDGE_SYSTEM, userText, schema: JUDGE_SCHEMA, maxOutputTokens: 2048 });
+
+    try {
+      const j = await ask(choice.modelKey);
+      if (validateJudgement(j)) return { ok: true, result: j, modelKey: choice.modelKey, retried: false };
+    } catch (e) {
+      // 네트워크·key·한도 오류는 재시도하지 않음 (요금·한도 보호)
+      if (!(e instanceof GeminiError) || e.kind !== "parse") return { ok: false, error: e };
+    }
+    // JSON 해석 실패/모양 불일치 → 가벼운 모델로 딱 1번만
+    if (!limiter.canCall("lite").ok) return { ok: false, error: new GeminiError("parse") };
+    try {
+      const j = await ask("lite");
+      if (validateJudgement(j)) return { ok: true, result: j, modelKey: "lite", retried: true };
+      return { ok: false, error: new GeminiError("parse") };
+    } catch (e) {
+      return { ok: false, error: e };
+    }
+  }
+
+  return { call, extractText, testConnection, generateJson, describeError, judge, validateJudgement };
 }
 
 
@@ -1026,8 +1184,9 @@ const TestEngine = (() => {
 
 
 /* =====================================================================
-   📊 Scorer — AI 없이 계산하는 로컬 추정 (백업용)
-   도달 레벨 → AR / Lexile 대략 범위로 바꿉니다.
+   📊 Scorer — AI 없이 계산하는 로컬 추정 (백업용) + AI에게 보낼 자료 정리
+   - 도달 레벨 → AR / Lexile 대략 범위
+   - AI에게는 학년·학습 경력·점수만 보냅니다. (이름·닉네임·메모·이전 교재는 보내지 않음)
    ===================================================================== */
 const Scorer = (() => {
   const LEVEL_MAP = [
@@ -1039,6 +1198,7 @@ const Scorer = (() => {
     { ar: [4.5, null], lexile: ["800L", null],   label: "Grade 4+" }
   ];
   const AREA_KO = { phonics: "파닉스", vocabulary: "어휘", grammar: "문법", reading: "독해" };
+  const GRADE_EN = { pre: "Pre-K (age 6-7, before Grade 1)", 1: "Grade 1", 2: "Grade 2", 3: "Grade 3", 4: "Grade 4" };
 
   function summarize(session) {
     const areas = {};
@@ -1046,8 +1206,8 @@ const Scorer = (() => {
       const attempts = Object.values(a.byLevel).reduce((n, b) => n + b.attempts, 0);
       const correct = Object.values(a.byLevel).reduce((n, b) => n + b.correct, 0);
       const missed = session.responses.filter(r => r.area === a.name && !r.correct).map(r => r.skill);
-      areas[a.name] = { reached: a.reached, endReason: a.endReason, attempts, correct, byLevel: a.byLevel,
-                        missedSkills: [...new Set(missed)] };
+      areas[a.name] = { reached: a.reached, startLevel: a.startLevel, endReason: a.endReason, attempts, correct,
+                        byLevel: a.byLevel, missedSkills: [...new Set(missed)] };
     }
     return areas;
   }
@@ -1061,17 +1221,17 @@ const Scorer = (() => {
     return null;
   }
 
-  function pickClass(arMid, classes) {
-    if (arMid === null) return null;
+  function pickClass(arValue, classes) {
+    if (arValue === null || arValue === undefined) return null;
     let found = classes[0];
-    for (const c of classes) if (arMid >= c.arMin) found = c;
+    for (const c of classes) if (arValue >= c.arMin) found = c;
     return found;
   }
 
   function localEstimate(session, classes) {
     const areas = summarize(session);
     const lv = baseLevel(areas);
-    if (lv === null) return { areas, level: null, ar: null, lexile: null, recommendedClass: null };
+    if (lv === null) return { areas, level: null, ar: null, lexile: null, recommendedClass: null, journeys: "" };
     const m = LEVEL_MAP[lv];
     const arMid = m.ar[1] === null ? m.ar[0] + 0.3 : (m.ar[0] + m.ar[1]) / 2;
     const cls = pickClass(arMid, classes);
@@ -1080,12 +1240,93 @@ const Scorer = (() => {
              recommendedClass: cls ? `${cls.emoji} ${cls.name}` : null, journeys: cls ? cls.journeys : "" };
   }
 
-  return { LEVEL_MAP, AREA_KO, summarize, localEstimate };
+  // 로컬 강점/보완점: 맞힌 skill(높은 레벨 우선) / 틀린 skill
+  function localStrengthsGaps(record, area) {
+    const rs = record.responses.filter(r => r.area === area);
+    const strengths = [...new Set(rs.filter(r => r.correct).sort((a, b) => b.level - a.level).map(r => r.skill))].slice(0, 3);
+    const gaps = [...new Set(rs.filter(r => !r.correct).sort((a, b) => a.level - b.level).map(r => r.skill))].slice(0, 3);
+    return { strengths, gaps };
+  }
+
+  function levelText(reached) {
+    return reached === null || reached === undefined ? "미실시" : `L${reached} (${LEVEL_MAP[reached].label})`;
+  }
+
+  // AI 없이 만드는 학부모용 요약
+  function localSummary(record) {
+    const L = record.local;
+    const tested = Object.keys(AREA_KO).filter(k => L.areas[k] && L.areas[k].reached !== null);
+    if (!tested.length) return "응답한 문항이 적어 수준을 추정하기 어렵습니다. 상담 시 추가로 확인하겠습니다.";
+    const parts = tested.map(k => `${AREA_KO[k]} ${LEVEL_MAP[L.areas[k].reached].label}`);
+    const sorted = tested.slice().sort((a, b) => L.areas[b].reached - L.areas[a].reached);
+    const best = sorted[0], weak = sorted[sorted.length - 1];
+    const lines = [`이번 레벨 테스트에서 ${parts.join(", ")} 수준으로 확인되었습니다.`];
+    if (L.areas[best].reached !== L.areas[weak].reached) {
+      lines.push(`${AREA_KO[best]} 영역이 가장 안정적이며, ${AREA_KO[weak]} 영역을 보완하면 더 고르게 성장할 수 있어요.`);
+    } else {
+      lines.push("영역별 실력이 고르게 자라고 있어요.");
+    }
+    if (L.ar) lines.push(`현재 AR ${Report.fmtAr(L.ar.min, L.ar.max)}, Lexile ${Report.fmtLexile(L.lexile.min, L.lexile.max)} 범위의 책을 편안하게 읽을 수 있을 것으로 예상됩니다.`);
+    if (L.recommendedClass) lines.push(`${L.recommendedClass}에서 Journeys ${L.journeys} 과정으로 시작하기를 추천드립니다.`);
+    return lines.join(" ");
+  }
+
+  // AI 없이 만드는 원장용 지도 포인트
+  function localTeacherNotes(record) {
+    const notes = [];
+    for (const k of Object.keys(AREA_KO)) {
+      const g = localStrengthsGaps(record, k).gaps;
+      if (g.length) notes.push(`${AREA_KO[k]}: ${g.join(", ")} 집중 지도`);
+    }
+    if (!notes.length) notes.push("틀린 문항이 거의 없어 상위 레벨 문항으로 추가 확인 권장");
+    return notes.slice(0, 5).map((n, i) => `${i + 1}) ${n}`).join("\n");
+  }
+
+  // 🤖 AI에게 보낼 자료 — 개인 정보(이름·닉네임·메모·이전 교재)는 넣지 않습니다.
+  function buildAiPayload(record, classes) {
+    const areas = {};
+    for (const k of Object.keys(AREA_KO)) {
+      const a = record.local.areas[k];
+      const rs = record.responses.filter(r => r.area === k);
+      const byLevel = {};
+      Object.keys(a.byLevel || {}).forEach(lv => { byLevel["L" + lv] = a.byLevel[lv]; });
+      areas[k] = {
+        tested: rs.length > 0,
+        startLevel: a.startLevel === undefined ? null : "L" + a.startLevel,
+        reachedLevel: a.reached === null ? null : "L" + a.reached,
+        endReason: a.endReason,
+        correctAttemptsByLevel: byLevel,
+        missedSkills: a.missedSkills,
+        correctSkills: [...new Set(rs.filter(r => r.correct).map(r => r.skill))]
+      };
+    }
+    const passages = {};
+    record.responses.filter(r => r.passage).forEach(r => {
+      const p = passages[r.passage.id] = passages[r.passage.id] || { level: "L" + r.level, lexile: r.passage.lexile, ar: r.passage.ar, correct: 0, attempts: 0 };
+      p.attempts += 1;
+      if (r.correct) p.correct += 1;
+    });
+    const months = record.profile.months;
+    return {
+      student: { grade: GRADE_EN[record.profile.grade] || "unknown", englishLearningMonths: months === null || months === undefined ? "unknown" : months },
+      areas,
+      readingPassages: Object.values(passages),
+      levelToRangeGuide: LEVEL_MAP.map((m, i) => ({ level: "L" + i, ar: m.ar[1] === null ? `${m.ar[0]}+` : `${m.ar[0]}-${m.ar[1]}`,
+                                                     lexile: m.lexile[1] === null ? `${m.lexile[0]}+` : `${m.lexile[0]}-${m.lexile[1]}` })),
+      classes: classes.map(c => ({ name: c.name, arRange: c.arMax === null ? `${c.arMin}+` : `${c.arMin}-${c.arMax}`, journeys: c.journeys }))
+    };
+  }
+
+  return { LEVEL_MAP, AREA_KO, summarize, localEstimate, localStrengthsGaps, localSummary, localTeacherNotes,
+           buildAiPayload, pickClass, levelText };
 })();
 
 
 /* =====================================================================
-   🌸 Report — 결과 화면 (지금은 로컬 추정 요약. AI 판정·차트·인쇄는 4단계)
+   🌸 Report — 성장 리포트 (학부모용 / 원장용)
+   - AI 판정이 있으면 AI 결과, 없으면 로컬 추정 결과를 보여줍니다.
+   - 레이더 차트는 Canvas로 직접 그립니다.
+   - 인쇄 / PDF 저장은 학부모용 화면만 A4 1장으로 나옵니다.
    ===================================================================== */
 const Report = (() => {
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -1093,52 +1334,261 @@ const Report = (() => {
                       confirmed: "통과 레벨 확인", "max-items": "최대 문항", "no-items": "문항 소진",
                       time: "시간 종료", stopped: "중간 종료", skipped: "미실시" };
   const GRADE_KO = { pre: "예비초", 1: "1학년", 2: "2학년", 3: "3학년", 4: "4학년" };
+  const AREA_EMOJI = { phonics: "🔤", vocabulary: "🌼", grammar: "🌿", reading: "📖" };
 
-  function fmtRange(min, max, isAr) {
-    if (min === null || min === undefined) return "-";
-    if (max === null || max === undefined) return isAr ? `${min.toFixed(1)} 이상` : `${min} 이상`;
-    return isAr ? `${min.toFixed(1)} – ${max.toFixed(1)}` : `${min} – ${max}`;
+  function fmtAr(min, max) {
+    if (typeof min !== "number") return "-";
+    if (max === null || max === undefined) return `${min.toFixed(1)} 이상`;
+    return `${min.toFixed(1)} – ${max.toFixed(1)}`;
+  }
+  function fmtLexile(min, max) {
+    if (!min) return "-";
+    if (!max) return `${min} 이상`;
+    return `${min} – ${max}`;
   }
 
-  function render(record) {
-    const { profile, local, responses, finishedAt } = record;
-    const date = new Date(finishedAt).toLocaleDateString("ko-KR");
-    const rows = TestEngine.AREAS.map(k => {
-      const a = local.areas[k];
-      const lv = a.reached === null ? "-" : `L${a.reached} (${Scorer.LEVEL_MAP[a.reached].label})`;
-      return `<tr><td><b>${Scorer.AREA_KO[k]}</b></td><td>${lv}</td><td>${a.correct}/${a.attempts}</td>
+  // AI가 말한 반 이름을 실제 반 설정과 맞춤
+  function resolveClass(name, classes) {
+    if (!name) return null;
+    const exact = classes.find(c => c.name === name.trim());
+    if (exact) return exact;
+    const inc = classes.filter(c => name.includes(c.name)).sort((a, b) => b.name.length - a.name.length);
+    return inc[0] || null;
+  }
+
+  // 화면에 보여줄 내용 합치기 (AI 우선, 없으면 로컬)
+  function compose(record) {
+    const L = record.local;
+    const ai = record.ai && record.ai.result;
+    const classes = Storage.getClasses();
+    let className = L.recommendedClass, journeys = L.journeys;
+    if (ai) {
+      const c = resolveClass(ai.recommendedClass, classes) || Scorer.pickClass((ai.ar.min + ai.ar.max) / 2, classes);
+      if (c) className = `${c.emoji} ${c.name}`;
+      journeys = ai.journeysStart || journeys;
+    }
+    const areas = {};
+    for (const k of Object.keys(Scorer.AREA_KO)) {
+      const la = L.areas[k];
+      const sg = Scorer.localStrengthsGaps(record, k);
+      const aa = ai && ai.areas[k];
+      areas[k] = {
+        reached: la.reached,
+        levelText: Scorer.levelText(la.reached),
+        aiText: aa ? (k === "phonics" ? [aa.level, aa.stage].filter(Boolean).join(" · ") : aa.gradeEquivalent) : "",
+        strengths: aa && aa.strengths.length ? aa.strengths : sg.strengths,
+        gaps: aa && aa.gaps.length ? aa.gaps : sg.gaps,
+        correct: la.correct, attempts: la.attempts
+      };
+    }
+    return {
+      source: ai ? (record.ai.modelKey === "lite" ? "lite" : "main") : "local",
+      ar: ai ? ai.ar : L.ar,
+      lexile: ai ? ai.lexile : L.lexile,
+      className, journeys, areas,
+      parentSummary: ai ? ai.parentSummaryKo : Scorer.localSummary(record),
+      teacherNotes: ai ? ai.teacherNotesKo : Scorer.localTeacherNotes(record),
+      confidence: ai ? ai.confidence : null
+    };
+  }
+
+  function sourceBadge(record, v) {
+    if (record.aiPending) return `<span class="pill">🤖 AI가 판정하는 중…</span>`;
+    if (v.source === "main") return `<span class="pill">🤖 AI 판정 · ${esc(record.ai.modelId)}</span>`;
+    if (v.source === "lite") return `<span class="pill warn">🍃 가벼운 모델로 판정 · ${esc(record.ai.modelId)}</span>`;
+    return `<span class="pill no">🌱 AI 없이 로컬 추정</span>`;
+  }
+
+  function list(items) {
+    return items && items.length ? `<ul>${items.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<ul><li>-</li></ul>`;
+  }
+
+  function render(record, tab = "parent") {
+    const v = compose(record);
+    const p = record.profile;
+    const date = new Date(record.finishedAt).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
+    const areaCards = Object.keys(Scorer.AREA_KO).map(k => {
+      const a = v.areas[k];
+      return `<div class="area-card">
+        <h4><span>${AREA_EMOJI[k]} ${Scorer.AREA_KO[k]}</span><span class="lv">${esc(a.levelText)}</span></h4>
+        ${a.aiText ? `<div class="ai-grade">${esc(a.aiText)}</div>` : ""}
+        <div class="lbl">🌼 강점</div>${list(a.strengths)}
+        <div class="lbl gap">🌱 보완점</div>${list(a.gaps)}
+      </div>`;
+    }).join("");
+
+    const status = record.aiStatus
+      ? `<div class="notice ${record.aiStatus.kind === "no-key" ? "" : "warn"}">${esc(record.aiStatus.message)}</div>` : "";
+
+    const parent = `
+      <div class="sheet" id="parentPane" ${tab === "parent" ? "" : "hidden"}>
+        <div class="sheet-head">
+          <div class="sheet-brand"><div class="brand-logo" aria-hidden="true">🌿</div>
+            <div><div class="sheet-school">민트 선생님의 영어 정원</div><div class="sheet-title">🌸 성장 리포트</div></div></div>
+          <div class="sheet-meta"><b>${esc(p.nickname)}</b> · ${GRADE_KO[p.grade] || ""}<br>${date}</div>
+        </div>
+        <div class="sheet-top">
+          <div class="radar-wrap"><canvas id="radar" width="600" height="600" aria-label="영역별 레이더 차트"></canvas></div>
+          <div class="kpis">
+            <div class="kpi"><div class="k">AR 지수 (추정 범위)</div><div class="v">${fmtAr(v.ar && v.ar.min, v.ar && v.ar.max)}</div></div>
+            <div class="kpi"><div class="k">Lexile 지수 (추정 범위)</div><div class="v">${v.lexile ? fmtLexile(v.lexile.min, v.lexile.max) : "-"}</div></div>
+            <div class="kpi class"><div class="k">추천 반</div><div class="v">${esc(v.className || "-")}</div>
+              <div class="k">Journeys 시작: ${esc(v.journeys || "-")}</div></div>
+          </div>
+        </div>
+        <div class="area-grid">${areaCards}</div>
+        <div class="summary-box"><div class="lbl">💌 학부모님께</div><p>${esc(v.parentSummary)}</p></div>
+        <div class="comment-box">
+          <div class="lbl">✍️ 원장 코멘트</div>
+          <textarea id="teacherComment" class="no-print" placeholder="학부모님께 전할 말씀을 적어 주세요. (인쇄에 포함됩니다)">${esc(record.teacherComment || "")}</textarea>
+          <p class="print-only" id="commentPrint">${esc(record.teacherComment || "")}</p>
+        </div>
+        <p class="disclaimer">본 결과는 상담용 추정치이며 공식 AR/Lexile 점수가 아닙니다.</p>
+      </div>`;
+
+    const areaRows = Object.keys(Scorer.AREA_KO).map(k => {
+      const a = record.local.areas[k];
+      return `<tr><td><b>${Scorer.AREA_KO[k]}</b></td><td>${a.startLevel === undefined ? "-" : "L" + a.startLevel}</td>
+        <td>${esc(Scorer.levelText(a.reached))}</td><td>${a.correct}/${a.attempts}</td>
         <td>${esc(REASON_KO[a.endReason] || "-")}</td><td>${a.missedSkills.map(esc).join(", ") || "-"}</td></tr>`;
     }).join("");
-    const resp = responses.map((r, i) => `<tr><td>${i + 1}</td><td>${Scorer.AREA_KO[r.area]}</td><td>${esc(r.id)}</td>
-      <td>L${r.level}</td><td>${esc(r.skill)}</td><td>${esc(r.choice ?? "")}</td>
+    const resp = record.responses.map((r, i) => `<tr><td>${i + 1}</td><td>${Scorer.AREA_KO[r.area]}</td><td>${esc(r.id)}</td>
+      <td>L${r.level}</td><td>${esc(r.skill)}</td><td>${esc(r.choice ?? "")}${r.retries ? ` (🔁${r.retries})` : ""}</td>
       <td><span class="pill${r.correct ? "" : " no"}">${r.correct ? "정답" : "오답"}</span></td></tr>`).join("");
+    const modelInfo = record.ai
+      ? `${record.ai.modelKey === "lite" ? "가벼운 모델" : "기본 모델"} (${esc(record.ai.modelId)})${record.ai.retried ? " · 형식 오류로 1회 재요청" : ""} · 신뢰도 ${esc(record.ai.result.confidence)}`
+      : "AI 판정 없음 (로컬 추정)";
+
+    const teacher = `
+      <div id="teacherPane" ${tab === "teacher" ? "" : "hidden"}>
+        <div class="card" style="margin-bottom:16px">
+          <h2>🌿 원장용 상담 정보</h2>
+          <table class="plain"><tbody>
+            <tr><th>학생</th><td>${esc(p.nickname)} · ${GRADE_KO[p.grade] || ""} · 학습 ${p.months ?? "-"}개월 · 이전 교재 ${esc(p.prevBook || "-")}</td></tr>
+            <tr><th>상담 메모</th><td style="white-space:pre-wrap">${esc(p.memo || "-")}</td></tr>
+            <tr><th>소요 시간</th><td>약 ${Math.max(1, Math.round((record.elapsedMs || 0) / 60000))}분 · 시작 레벨 L${record.startLevel}</td></tr>
+            <tr><th>사용 모델</th><td>${modelInfo}</td></tr>
+          </tbody></table>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <h2>🧑‍🌾 지도 포인트 ${record.ai ? "(AI)" : "(로컬)"}</h2>
+          <p style="white-space:pre-wrap;margin:0">${esc(v.teacherNotes)}</p>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <h2>영역별 진행 · 틀린 skill</h2>
+          <div class="table-wrap"><table class="plain">
+            <thead><tr><th>영역</th><th>시작</th><th>도달 레벨</th><th>정답/시도</th><th>종료 사유</th><th>틀린 skill</th></tr></thead>
+            <tbody>${areaRows}</tbody></table></div>
+        </div>
+        <div class="card">
+          <h2>문항별 응답 기록</h2>
+          <div class="table-wrap"><table class="plain">
+            <thead><tr><th>#</th><th>영역</th><th>문항</th><th>레벨</th><th>skill</th><th>응답</th><th>결과</th></tr></thead>
+            <tbody>${resp || '<tr><td colspan="7">응답 없음</td></tr>'}</tbody></table></div>
+        </div>
+      </div>`;
+
+    const usage = RateLimiter.usageText();
     return `
-      <div class="card" style="margin-bottom:18px">
-        <h2>🌷 ${esc(profile.nickname)} · ${GRADE_KO[profile.grade] || ""} · ${date}</h2>
-        <p class="hint">로컬 추정 결과입니다. AI 판정·레이더 차트·인쇄용 리포트는 다음 단계에서 추가됩니다.</p>
-        <div class="grid grid-2">
-          <div><div class="hint">AR 추정 범위</div><div class="big-number">${fmtRange(local.ar && local.ar.min, local.ar && local.ar.max, true)}</div></div>
-          <div><div class="hint">Lexile 추정 범위</div><div class="big-number">${local.lexile ? fmtRange(local.lexile.min, local.lexile.max, false) : "-"}</div></div>
-          <div><div class="hint">추천 반</div><div class="big-number">${esc(local.recommendedClass || "-")}</div></div>
-          <div><div class="hint">Journeys 시작</div><div class="big-number">${esc(local.journeys || "-")}</div></div>
+      <div class="report-tools no-print">
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" data-tab="parent" aria-selected="${tab === "parent"}">👪 학부모용</button>
+          <button class="tab" role="tab" data-tab="teacher" aria-selected="${tab === "teacher"}">🌿 원장용</button>
+        </div>
+        <div class="ai-bar">${sourceBadge(record, v)}
+          <div class="btn-row" style="margin:0">
+            <button class="btn btn-soft" type="button" id="btnJudge" ${record.aiPending ? "disabled" : ""}>🤖 ${record.ai ? "다시 판정" : "AI 판정 받기"}</button>
+            <button class="btn btn-soft" type="button" id="btnCopySms">💬 상담 요약 문자</button>
+            <button class="btn btn-primary" type="button" id="btnPrint">🖨️ 인쇄 / PDF 저장</button>
+          </div>
+        </div>
+        <p class="hint" style="margin:6px 0 10px">오늘 AI 사용량: ${esc(usage)}</p>
+        ${status}
+        <div class="card sms-card" id="smsCard" hidden>
+          <h2>💬 학부모님께 보낼 3줄 요약</h2>
+          <p class="hint">필요하면 고친 뒤 복사하세요.${p.memo ? `<br>📝 상담 메모: ${esc(p.memo)}` : ""}</p>
+          <textarea id="smsText" rows="4"></textarea>
+          <div class="btn-row"><button class="btn btn-primary" type="button" id="btnCopyNow">📋 복사하기</button></div>
         </div>
       </div>
-      <div class="card" style="margin-bottom:18px">
-        <h2>영역별 도달 레벨</h2>
-        <div class="table-wrap"><table class="plain">
-          <thead><tr><th>영역</th><th>도달 레벨</th><th>정답/시도</th><th>종료 사유</th><th>틀린 skill</th></tr></thead>
-          <tbody>${rows}</tbody></table></div>
-      </div>
-      <div class="card">
-        <h2>문항별 응답 기록 (원장용)</h2>
-        <div class="table-wrap"><table class="plain">
-          <thead><tr><th>#</th><th>영역</th><th>문항</th><th>레벨</th><th>skill</th><th>응답</th><th>결과</th></tr></thead>
-          <tbody>${resp || '<tr><td colspan="7">응답 없음</td></tr>'}</tbody></table></div>
-      </div>
-      <p class="hint" style="margin-top:14px">본 결과는 상담용 추정치이며 공식 AR/Lexile 점수가 아닙니다.</p>`;
+      ${parent}
+      ${teacher}`;
   }
 
-  return { render, fmtRange };
+  // 🕸️ 레이더 차트 (Canvas 직접 그리기)
+  function drawRadar(canvas, record) {
+    if (!canvas || !canvas.getContext) return;
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width, H = canvas.height, cx = W / 2, cy = H / 2 + 6, R = W * 0.30;
+    const keys = ["phonics", "vocabulary", "grammar", "reading"];
+    const css = getComputedStyle(document.documentElement);
+    const c = (n) => css.getPropertyValue(n).trim();
+    ctx.clearRect(0, 0, W, H);
+    const angle = (i) => -Math.PI / 2 + (i * 2 * Math.PI) / keys.length;
+    const pt = (i, r) => [cx + Math.cos(angle(i)) * r, cy + Math.sin(angle(i)) * r];
+
+    // 눈금 (L0~L5 → 6칸)
+    for (let ring = 1; ring <= 6; ring++) {
+      ctx.beginPath();
+      keys.forEach((_, i) => { const [x, y] = pt(i, (R * ring) / 6); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.closePath();
+      ctx.fillStyle = ring % 2 ? "rgba(159,220,192,0.10)" : "rgba(255,255,255,0)";
+      ctx.fill();
+      ctx.strokeStyle = c("--line") || "#d6ecdf";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    keys.forEach((_, i) => {
+      const [x, y] = pt(i, R);
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, y); ctx.strokeStyle = c("--line"); ctx.stroke();
+    });
+
+    // 학생 값 (도달 레벨 + 1) / 6
+    const vals = keys.map(k => { const r = record.local.areas[k].reached; return r === null ? 0 : (r + 1) / 6; });
+    ctx.beginPath();
+    vals.forEach((v, i) => { const [x, y] = pt(i, R * v); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.closePath();
+    ctx.fillStyle = "rgba(58,157,122,0.28)";
+    ctx.fill();
+    ctx.strokeStyle = c("--mint-600") || "#3a9d7a";
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    vals.forEach((v, i) => {
+      const [x, y] = pt(i, R * v);
+      ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2);
+      ctx.fillStyle = c("--petal") || "#ffb7c5"; ctx.fill();
+      ctx.lineWidth = 4; ctx.strokeStyle = "#fff"; ctx.stroke();
+    });
+
+    // 축 이름
+    ctx.fillStyle = c("--mint-900") || "#1f5f4a";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    keys.forEach((k, i) => {
+      const [x, y] = pt(i, R + 64);
+      const r = record.local.areas[k].reached;
+      ctx.font = "800 30px Nunito, 'Noto Sans KR', sans-serif";
+      ctx.fillText(Scorer.AREA_KO[k], x, y - 16);
+      ctx.font = "700 24px Nunito, 'Noto Sans KR', sans-serif";
+      ctx.fillStyle = c("--mint-600") || "#3a9d7a";
+      ctx.fillText(r === null ? "미실시" : `L${r}`, x, y + 18);
+      ctx.fillStyle = c("--mint-900") || "#1f5f4a";
+    });
+  }
+
+  // 💬 상담 요약 문자 (3줄)
+  function smsText(record) {
+    const v = compose(record);
+    const p = record.profile;
+    const date = new Date(record.finishedAt).toLocaleDateString("ko-KR");
+    const l1 = `[민트 선생님의 영어 정원] ${p.nickname} 레벨 테스트 결과 (${date})`;
+    const l2 = `추천 반: ${(v.className || "-").replace(/^\S+\s/, "")} · AR ${fmtAr(v.ar && v.ar.min, v.ar && v.ar.max)} · Lexile ${v.lexile ? fmtLexile(v.lexile.min, v.lexile.max) : "-"}`;
+    const first = (v.parentSummary || "").split(/(?<=[.!?。])\s/)[0];
+    const l3 = (p.memo || "").trim() ? `${first} 상담 때 말씀해 주신 부분도 수업에서 꼼꼼히 챙기겠습니다. 🌱` : `${first} 🌱`;
+    return [l1, l2, l3].join("\n");
+  }
+
+  return { render, compose, drawRadar, smsText, fmtAr, fmtLexile, resolveClass };
 })();
 
 
@@ -1479,16 +1929,124 @@ const UI = (() => {
       id: session.id, profile: session.profile, startedAt: session.createdAt, finishedAt: now,
       elapsedMs: session.elapsedMs, startLevel: session.startLevel,
       responses: session.responses,
-      local: Scorer.localEstimate(session, Storage.getClasses())
+      local: Scorer.localEstimate(session, Storage.getClasses()),
+      ai: null, aiStatus: null, teacherComment: ""
     };
     const records = Storage.get("records", []);
     records.unshift(record);
     Storage.set("records", records);
-    Storage.set("lastResult", record);
     Storage.remove("session");
     session = null;
-    $("#reportBody").innerHTML = Report.render(record);
-    show("report");
+    // 학생 1명당 AI 판정은 이 1회가 원칙 (key가 없으면 로컬 결과만)
+    if (!Storage.hasApiKey() && !MOCK_MODE) {
+      updateRecord(record.id, { aiStatus: { kind: "no-key",
+        message: "API key가 없어 AI 없이 로컬 추정 결과를 보여드려요. ⚙️ 정원 관리에서 key를 저장하면 'AI 판정 받기'를 누를 수 있어요." } });
+    }
+    openReport(record.id, "parent");
+    if (Storage.hasApiKey() || MOCK_MODE) runJudge(record.id);
+  }
+
+  /* ---------- 🌸 성장 리포트 ---------- */
+  let reportId = null;
+  let reportTab = "parent";
+
+  function getRecord(id) { return Storage.get("records", []).find(r => r.id === id) || null; }
+  function updateRecord(id, patch) {
+    const list = Storage.get("records", []);
+    const i = list.findIndex(r => r.id === id);
+    if (i < 0) return null;
+    list[i] = { ...list[i], ...patch };
+    Storage.set("records", list);
+    return list[i];
+  }
+
+  const judging = new Set(); // 지금 AI 판정 중인 기록
+
+  function openReport(id, tab = reportTab) {
+    let record = getRecord(id);
+    if (!record) return;
+    if (record.aiPending && !judging.has(id)) record = updateRecord(id, { aiPending: false }); // 중간에 창을 닫았던 경우
+    reportId = id;
+    reportTab = tab;
+    if ($('[data-screen="report"]').hidden) show("report");
+    $("#reportBody").innerHTML = Report.render(record, tab);
+    Report.drawRadar($("#radar"), record);
+    bindReport(record);
+  }
+
+  function bindReport(record) {
+    $$("#reportBody [data-tab]").forEach(b => b.addEventListener("click", () => {
+      reportTab = b.dataset.tab;
+      $$("#reportBody [data-tab]").forEach(x => x.setAttribute("aria-selected", String(x === b)));
+      $("#parentPane").hidden = reportTab !== "parent";
+      $("#teacherPane").hidden = reportTab !== "teacher";
+    }));
+    const ta = $("#teacherComment");
+    let t = null;
+    ta.addEventListener("input", () => {
+      $("#commentPrint").textContent = ta.value;
+      clearTimeout(t);
+      t = setTimeout(() => updateRecord(record.id, { teacherComment: ta.value }), 400);
+    });
+    $("#btnPrint").addEventListener("click", () => {
+      updateRecord(record.id, { teacherComment: ta.value });
+      window.print();
+    });
+    $("#btnJudge").addEventListener("click", () => {
+      const r = getRecord(record.id);
+      const msg = (r.ai ? "AI 판정을 다시 받을까요?" : "AI 판정을 받을까요?")
+        + `\n무료 사용량 1회가 사용됩니다. (오늘: ${RateLimiter.usageText()})`;
+      if (!confirm(msg)) return;
+      runJudge(record.id);
+    });
+    $("#btnCopySms").addEventListener("click", () => {
+      const card = $("#smsCard");
+      $("#smsText").value = Report.smsText(getRecord(record.id));
+      card.hidden = !card.hidden;
+    });
+    $("#btnCopyNow").addEventListener("click", async () => {
+      const text = $("#smsText").value;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (e) {
+        $("#smsText").select();
+        try { document.execCommand("copy"); } catch (e2) { /* 무시 */ }
+      }
+      toast("📋 복사했습니다. 문자나 카카오톡에 붙여넣으세요.");
+    });
+  }
+
+  async function runJudge(id) {
+    const record = getRecord(id);
+    if (!record) return;
+    if (!Storage.hasApiKey() && !MOCK_MODE) {
+      updateRecord(id, { aiStatus: { kind: "no-key", message: GeminiClient.describeError({ kind: "no-key" }) } });
+      if (reportId === id) openReport(id);
+      return;
+    }
+    if (judging.has(id)) return; // 중복 클릭 방지
+    judging.add(id);
+    updateRecord(id, { aiPending: true, aiStatus: null });
+    if (reportId === id) openReport(id);
+    let res;
+    try {
+      res = await GeminiClient.judge(Scorer.buildAiPayload(record, Storage.getClasses()));
+    } catch (e) {
+      res = { ok: false, error: e };
+    } finally {
+      judging.delete(id);
+    }
+    if (res.ok) {
+      const models = Storage.getModels();
+      updateRecord(id, { aiPending: false, aiStatus: null,
+        ai: { result: res.result, modelKey: res.modelKey, modelId: models[res.modelKey].id, retried: res.retried, at: Date.now() } });
+      toast(res.modelKey === "lite" ? "🍃 가벼운 모델로 판정했어요." : "🌸 AI 판정이 완료되었어요.");
+    } else {
+      const err = res.error || {};
+      updateRecord(id, { aiPending: false,
+        aiStatus: { kind: err.kind || "error", message: GeminiClient.describeError(err) + " 지금은 로컬 추정 결과를 보여드려요." } });
+    }
+    if (reportId === id) openReport(id);
   }
 
   function renderResumeCard() {
@@ -1779,6 +2337,69 @@ const SelfTest = (() => {
     check("문제은행: 학생 화면용 문장에 한국어 없음", !bank.some(q => /[가-힣]/.test([q.prompt, q.word, ...(q.choices || []), q.passage && q.passage.text].join(" "))));
   }
 
+  /* ---------- AI 판정 점검 (가짜 응답 사용, 실제 호출 없음) ---------- */
+  async function testJudge() {
+    const reply = (status, obj) => ({ ok: status === 200, status, json: async () => obj });
+    const textReply = (text) => reply(200, { candidates: [{ content: { parts: [{ text }] } }] });
+    // plan: 호출 순서대로 돌려줄 응답 목록
+    function setup(plan) {
+      const rl = createRateLimiter(createMemoryStore(), fakeModels);
+      const calls = [];
+      const client = createGeminiClient({ limiter: rl, getKey: () => "k-123", getModels: fakeModels,
+        fetchImpl: async (url, opts) => { calls.push(url.includes("/m:") ? "main" : "lite"); return plan[calls.length - 1](JSON.parse(opts.body)); } });
+      return { rl, calls, client };
+    }
+    const good = () => textReply(JSON.stringify(MOCK_JUDGEMENT));
+    const bad = () => textReply("{ broken");
+    const wrongShape = () => textReply(JSON.stringify({ ...MOCK_JUDGEMENT, confidence: "maybe" }));
+
+    check("응답 검증: 샘플 JSON 통과", createGeminiClient({ limiter: null, getKey: () => "", getModels: fakeModels, fetchImpl: null }).validateJudgement(MOCK_JUDGEMENT));
+
+    let t = setup([(body) => {
+      const gc = body.generationConfig || {};
+      return gc.responseMimeType === "application/json" && gc.responseSchema && gc.temperature === 0.2 && gc.maxOutputTokens === 2048 && body.systemInstruction ? good() : bad();
+    }]);
+    let r = await t.client.judge({});
+    check("판정: main 모델 1회 호출, JSON 형식·스키마·온도 설정 포함", r.ok && r.modelKey === "main" && t.calls.join() === "main");
+
+    t = setup([good]);
+    for (let i = 0; i < 18; i++) t.rl.record("main", Date.now() - (i + 1) * 61000);
+    r = await t.client.judge({});
+    check("판정: main 하루 한도 소진 → lite로 판정", r.ok && r.modelKey === "lite" && t.calls.join() === "lite");
+
+    t = setup([bad, good]);
+    r = await t.client.judge({});
+    check("판정: JSON 깨짐 → lite로 1회 재요청 후 성공", r.ok && r.modelKey === "lite" && r.retried && t.calls.join() === "main,lite");
+
+    t = setup([wrongShape, wrongShape, good]);
+    r = await t.client.judge({});
+    check("판정: 모양 불일치 2번 → 재요청은 1회만, 로컬 결과로", !r.ok && r.error.kind === "parse" && t.calls.length === 2);
+
+    t = setup([() => reply(429, {})]);
+    r = await t.client.judge({});
+    check("판정: 429 → 재시도 없음, 한도 초과 안내", !r.ok && r.error.kind === "rate" && t.calls.length === 1);
+
+    t = setup([good]);
+    for (let i = 0; i < 18; i++) t.rl.record("main", Date.now() - (i + 1) * 61000);
+    t.rl.markExhausted("lite");
+    r = await t.client.judge({});
+    check("판정: 두 모델 모두 소진 → 호출 없이 로컬 결과 + 내일 안내", !r.ok && r.error.kind === "daily-local" && t.calls.length === 0
+      && /이후 AI 판정이 가능/.test(t.client.describeError(r.error)));
+
+    // 개인 정보가 AI로 가지 않는지
+    const bank = fakeBank();
+    const s = TestEngine.createSession({ nickname: "비밀닉네임", grade: "2", months: 12, prevBook: "비밀교재", memo: "비밀메모" }, 0);
+    for (let i = 0; i < 60 && s.phase !== "done"; i++) {
+      if (s.phase === "intro") TestEngine.beginArea(s);
+      if (TestEngine.currentItem(s, bank)) TestEngine.answer(s, bank, i % 2 === 0, {}, 1000 * (i + 1));
+    }
+    const rec = { profile: s.profile, responses: s.responses, local: Scorer.localEstimate(s, DEFAULT_CLASSES), finishedAt: Date.now() };
+    const payload = JSON.stringify(Scorer.buildAiPayload(rec, DEFAULT_CLASSES));
+    check("AI 전송 자료에 닉네임·메모·이전 교재 없음", !/비밀/.test(payload) && /Grade 2/.test(payload));
+    check("반 이름 맞추기: '떡잎반 (Grade 1)' → 떡잎반", (Report.resolveClass("떡잎반 (Grade 1)", DEFAULT_CLASSES) || {}).name === "떡잎반");
+    check("로컬 요약 문장 생성", Scorer.localSummary(rec).length > 20);
+  }
+
   async function run() {
     console.log("🧪 민트 정원 자가 점검 시작");
     results.length = 0;
@@ -1787,6 +2408,7 @@ const SelfTest = (() => {
     await testErrorKinds();
     testEngine();
     testBank();
+    await testJudge();
     const passed = results.filter(r => r.ok).length;
     console.log(`🧪 결과: ${passed}/${results.length} 통과`);
     const panel = document.getElementById("testPanel");
