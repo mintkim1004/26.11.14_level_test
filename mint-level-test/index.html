@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>민트 선생님의 영어 정원 · 레벨 테스트</title>
+<title>Ms. Mint's English Garden · 레벨 테스트</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -365,7 +365,7 @@ table.plain th { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
   <div class="brand">
     <div class="brand-logo" aria-hidden="true">🌿</div>
     <div>
-      <span class="brand-name" id="brandName">민트 선생님의 영어 정원</span>
+      <span class="brand-name" id="brandName">Ms. Mint's English Garden</span>
       <span class="brand-sub">Level Test · 신규 상담용</span>
     </div>
   </div>
@@ -553,6 +553,8 @@ table.plain th { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
    기본값 — 앱이 처음 열릴 때 사용하는 값입니다.
    (설정 화면에서 바꾸면 이 기기에 따로 저장되고, 아래 값은 그대로 남습니다)
    ===================================================================== */
+const SCHOOL_NAME = "Ms. Mint's English Garden";   // 공부방 이름 (머리말·리포트·문자에 사용)
+
 const MODELS = {
   main: { id: "gemini-3.8-flash",      rpm: 5,  rpd: 20  },
   lite: { id: "gemini-3.5-flash-lite", rpm: 10, rpd: 500 }
@@ -1484,7 +1486,7 @@ const Report = (() => {
       <div class="sheet" id="parentPane" ${tab === "parent" ? "" : "hidden"}>
         <div class="sheet-head">
           <div class="sheet-brand"><div class="brand-logo" aria-hidden="true">🌿</div>
-            <div><div class="sheet-school">민트 선생님의 영어 정원</div><div class="sheet-title">🌸 성장 리포트</div></div></div>
+            <div><div class="sheet-school">${esc(SCHOOL_NAME)}</div><div class="sheet-title">🌸 성장 리포트</div></div></div>
           <div class="sheet-meta"><b>${esc(p.nickname)}</b> · ${GRADE_KO[p.grade] || ""}<br>${date}</div>
         </div>
         <div class="sheet-top">
@@ -1641,7 +1643,7 @@ const Report = (() => {
     const v = compose(record);
     const p = record.profile;
     const date = new Date(record.finishedAt).toLocaleDateString("ko-KR");
-    const l1 = `[민트 선생님의 영어 정원] ${p.nickname} 레벨 테스트 결과 (${date})`;
+    const l1 = `[${SCHOOL_NAME}] ${p.nickname} 레벨 테스트 결과 (${date})`;
     const l2 = `추천 반: ${(v.className || "-").replace(/^\S+\s/, "")} · AR ${fmtAr(v.ar && v.ar.min, v.ar && v.ar.max)} · Lexile ${v.lexile ? fmtLexile(v.lexile.min, v.lexile.max) : "-"}`;
     const first = (v.parentSummary || "").split(/(?<=[.!?。])\s/)[0];
     const l3 = (p.memo || "").trim() ? `${first} 상담 때 말씀해 주신 부분도 수업에서 꼼꼼히 챙기겠습니다. 🌱` : `${first} 🌱`;
@@ -1688,7 +1690,7 @@ const UI = (() => {
     const student = name === "test";
     document.body.classList.toggle("student-mode", student);
     document.documentElement.lang = student ? "en" : "ko";
-    $("#brandName").textContent = student ? "Mint Teacher's English Garden" : "민트 선생님의 영어 정원";
+    $("#brandName").textContent = SCHOOL_NAME;
     if (name === "settings") renderSettings();
     if (name === "start") renderResumeCard();
     if (name === "records") { setStatus("recordStatus", ""); renderRecords(); }
